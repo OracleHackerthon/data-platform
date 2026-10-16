@@ -42,7 +42,7 @@
 - `GET /api/health` → data: `{ "web": "up", "ai": "up" | "down" }`
 - `GET /api/db-check` → data: `{ "result": 1 }`
 
-## 기능 계약 (PLAN B-1~B-6) — 상태: 초안
+## 기능 계약 (PLAN B-1~B-6) — 상태: 확정 (10/16 21시, 공유 타입 `web/lib/types.ts`)
 
 ### 이 절의 공통 규칙
 - **역할 전달**: GET 은 쿼리 `?role=factory` 또는 `?role=startup&vendorId=<n>`, POST·PUT 은 본문에 `"role"`, `"vendorId"` 를 넣는다. 화면 상단 토글과 업체 Select(스타트업일 때만 보임)의 값을 그대로 보낸다.
@@ -216,3 +216,4 @@
 ## 변경 이력
 - 10/16 B-1~B-6 계약 초안 추가 (정민 확인 전)
 - 10/16 데이터셋 SECOM 으로 변경, 품질 점수(`qualityScore`)를 가치평가지수(`valueIndex`)로 교체, 계약에 `price`·`priceGuide` 추가 (초안)
+- 10/16 21시 B-1~B-6 계약 확정 (정민). 이후 변경은 이 이력에 남기고 `web/lib/types.ts` 를 같은 PR 에서 고친다
