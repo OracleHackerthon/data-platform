@@ -9,7 +9,7 @@ Oracle TELOS Challenge 2026 팀 스타터. 사람용 안내서입니다 (에이�
 
 | 사람 | 역할 | 주로 만지는 곳 | 쓰는 스킬 |
 |---|---|---|---|
-| 예원 | 화면·완성도·발표 | `web/app/**/page.tsx`, `layout.tsx`, `globals.css`, `web/components/<기능>/`, `docs/DEMO_SCRIPT.md` | `$start` `$submit` `$sync` `$gh-fix-ci`, 화면 작업 때 자동: `ui-design` `shadcn-ui` |
+| 예원 | **전권** (10/17~): 화면·백엔드·계약·발표 | `web/`, `ai/`, `research/`, `docs/PLAN.md`, `docs/API_CONTRACT.md`, `docs/DEMO_SCRIPT.md` | `$start` `$submit` `$sync` `$gh-fix-ci`, 화면 작업 때 자동: `ui-design` `shadcn-ui` |
 | 영진 | API·DB (예비 머지) | `web/app/api/`, `web/lib/db.ts`, `web/db/` | `$start` `$mock` `$submit` `$sync` `$review-pr` `$gh-fix-ci` |
 | 승연 | AI·데이터 분석 | `ai/`, `research/` | `$start` `$mock` `$submit` `$sync` `$gh-fix-ci` |
 | 정민 | 인프라·배포·통합(머지) | `deploy/`, `.github/`, 공통 파일, `docs/` | Claude Code: `/plan` `/review-pr` |
