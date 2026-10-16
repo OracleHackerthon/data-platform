@@ -21,6 +21,17 @@
 
 남의 경로를 바꿔야 하면 작업을 멈추고, 무엇이 필요한지 사용자에게 알린다.
 
+### 10/17 임시 분담 (남은 화면, 시연 전까지)
+예원 담당인 화면 중 아래 경로는 표의 사람이 만든다. **표에 적힌 경로만** 고친다.
+| 사람 | 화면 (시나리오) | 고칠 수 있는 경로 |
+|---|---|---|
+| 영진 | 모델 제출 버튼 (4), 익명 순위표 + 연락 요청 (5) | `web/app/tasks/[id]/page.tsx` (제출 버튼·결과 부분만), `web/app/tasks/[id]/leaderboard/`, `web/components/leaderboard/` |
+| 승연 | 접근 기록 (8) | `web/app/access-log/`, `web/components/access-log/` |
+| 예원 | 거래 목록·상세·수락·계약 (6~8), 대시보드 "과제 등록하기" 버튼 | 기존 담당 그대로 (`web/app/deals/`, `web/components/deals/` 등) |
+- 디자인은 예원 기준을 따른다: `web/app/catalog/page.tsx` 의 구성을 본뜨고, `web/components/dashboard/use-api.ts` 의 `useApi`·`requestApi` 를 그대로 쓴다. 응답 타입은 `web/lib/types.ts` 에서 가져온다.
+- 공통 파일은 고치지 않는다: `web/app/layout.tsx`, `web/components/role/`, `web/components/dashboard/use-api.ts`, `web/app/globals.css`, `web/components/ui/`. 메뉴 링크는 이미 있다.
+- 백엔드 규칙(위 "작업 방식")은 똑같이 적용된다. API 응답이 화면에 안 맞으면 고치지 말고 정민에게 알린다.
+
 ## 작업 전에 읽을 것
 - 팀원과의 첫 대화: `docs/TEAM.md` (읽는 순서, 사람별 할 일)
 - 기능 구현: `docs/PLAN.md` 의 해당 기능 체크리스트
