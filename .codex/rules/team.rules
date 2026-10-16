@@ -125,3 +125,23 @@ prefix_rule(
     justification = "PR 생성과 확인",
     match = ["gh pr create --fill", "gh pr checks 3"],
 )
+# 읽기 전용 gh (10/16 추가): 샌드박스는 네트워크가 막혀 있어 gh-fix-ci 가 CI 로그를 못 읽었다.
+# gh api 는 쓰기(POST·DELETE)도 되므로 넣지 않는다. gh run rerun·cancel 도 넣지 않는다.
+prefix_rule(
+    pattern = ["gh", "pr", "diff"],
+    decision = "allow",
+    justification = "PR 변경 내용 보기 (읽기 전용)",
+    match = ["gh pr diff 3"],
+)
+prefix_rule(
+    pattern = ["gh", "run", ["view", "list"]],
+    decision = "allow",
+    justification = "CI 실행 결과와 로그 보기 (읽기 전용, gh-fix-ci)",
+    match = ["gh run list --branch feat/x", "gh run view 123 --log-failed"],
+)
+prefix_rule(
+    pattern = ["gh", "auth", "status"],
+    decision = "allow",
+    justification = "gh 로그인 상태 확인 (읽기 전용)",
+    match = ["gh auth status"],
+)

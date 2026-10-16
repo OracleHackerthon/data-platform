@@ -1,0 +1,48 @@
+"use client";
+
+import Link from "next/link";
+import { Suspense } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useRole } from "./role-provider";
+import type { Role } from "@/lib/types";
+
+// API_CONTRACT.md 공통 규칙: 업체 A~D의 시드 ID는 1~4. 실명은 수락 전에 표시하지 않는다.
+const vendors = { 1: "업체 A", 2: "업체 B", 3: "업체 C", 4: "업체 D (반도체 제조)" };
+
+export function RoleToggle() {
+  return <Suspense fallback={<p className="text-sm text-muted-foreground">역할 메뉴를 불러오고 있습니다…</p>}><RoleControls /></Suspense>;
+}
+
+function RoleControls() {
+  const { role, vendorId, setRole, setVendorId, ready } = useRole();
+  const router = useRouter();
+  const path = usePathname();
+  const links = role === "factory"
+    ? [["/dashboard", "대시보드"], ["/tasks/1/leaderboard", "순위표"], ["/deals", "거래"], ["/access-log", "접근 기록"]]
+    : [["/catalog", "카탈로그"], ["/deals", "거래"]];
+  function changeRole(next: Role) {
+    setRole(next);
+    router.push(next === "factory" ? "/dashboard" : "/catalog");
+  }
+  return <div className="flex w-full flex-col gap-4">
+    <div className="flex flex-wrap items-center justify-between gap-4">
+      <Link href="/" className="font-semibold">제조 데이터 검증·거래</Link>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-sm text-muted-foreground">현재 역할</span>
+        <div role="group" aria-label="역할 전환" className="flex gap-2">
+          <Button disabled={!ready} aria-pressed={role === "factory"} variant={role === "factory" ? "default" : "outline"} onClick={() => changeRole("factory")}>공장</Button>
+          <Button disabled={!ready} aria-pressed={role === "startup"} variant={role === "startup" ? "default" : "outline"} onClick={() => changeRole("startup")}>스타트업</Button>
+        </div>
+        {role === "startup" && <Select value={vendorId} items={vendors} onValueChange={(value) => { if (value !== null) setVendorId(value); }}>
+          <SelectTrigger aria-label="업체 선택"><SelectValue /></SelectTrigger>
+          <SelectContent><SelectGroup>{Object.entries(vendors).map(([id, label]) => <SelectItem key={id} value={Number(id)}>{label}</SelectItem>)}</SelectGroup></SelectContent>
+        </Select>}
+      </div>
+    </div>
+    <nav aria-label="주 메뉴" className="flex flex-wrap gap-4">
+      {links.map(([href, label]) => <Link key={href} href={href} aria-current={path === href ? "page" : undefined} className="text-sm underline-offset-4 hover:underline aria-[current=page]:font-semibold aria-[current=page]:underline">{label}</Link>)}
+    </nav>
+  </div>;
+}
