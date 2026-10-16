@@ -24,6 +24,7 @@
 **예원이 전권을 갖고 진행한다** (10/17, DECISIONS D17). 이 절의 다른 규칙보다 우선한다.
 - 고칠 수 있는 곳: `web/` 전체(정민 공통 파일 `web/lib/{api,ai-client,types}.ts`, `web/components/ui/`, `web/package.json` 포함), `ai/` 전체(`ai/requirements.txt` 포함), `research/`, `docs/PLAN.md`, `docs/API_CONTRACT.md`, `docs/DEMO_SCRIPT.md`.
 - 예원이 정하는 것: 기능 범위·우선순위, 화면, API 계약(요청·응답 형태), 패키지 추가·`npx shadcn`. 이 항목들은 "정민 승인", "정민에게 알린다" 대신 예원이 결정한다. 계약을 바꾸면 같은 PR 에서 `docs/API_CONTRACT.md` 와 `web/lib/types.ts` 를 함께 고친다.
+- **추가·수정까지만 예원 판단이다. 삭제는 정민에게 묻는다.** 삭제란 파일·폴더 삭제, 기존 API 경로·응답 필드·함수·컴포넌트·화면 제거, 패키지 제거, DB 테이블·컬럼 삭제(`DROP`, `ALTER ... DROP`, 데이터 `DELETE`) 를 말한다. 이런 변경이 필요하면 실행하기 전에 멈추고 "⚠️ 삭제 경고: <지울 것> 을 지우려 합니다. 정민에게 확인해 주세요" 라고 알린 뒤, 정민이 승인할 때까지 하지 않는다. 기존 코드를 고치면서 줄 몇 개가 빠지는 정도는 삭제로 보지 않는다.
 - 정민에게 남는 것: `deploy/`, `Dockerfile`, `.github/`, `.codex/`, `.agents/`, `.claude/`, `AGENTS.md`·`CLAUDE.md`, 머지·배포·서버(OCI) 작업. 필요하면 정민에게 요청한다.
 - 그대로 지키는 것: 연결 규칙, Oracle SQL, "금지" 절(비밀값, main 직접 커밋 금지 등), 삭제·충돌·강제 push 규칙. 영진·승연이 같은 파일을 작업 중일 수 있으니 고치기 전에 알린다.
 
