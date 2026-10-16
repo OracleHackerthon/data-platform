@@ -14,14 +14,18 @@
 | Autonomous DB 를 누가 만드는가 | 무료 ADB 는 계정당 2개 한도 | 주최 측에 확인 |
 | OpenAI 키 수령 | **리허설에서 검증하지 못한 유일한 경로** | 받자마자 6절 순서대로 `/api/ai-example` 확인 |
 
-## 리소스 (당일 채움)
+## 리소스 (10/16 확인)
 | 항목 | 값 |
 |---|---|
 | 리전 | |
-| VM | OS: / 사용자: / Shape: / 메모리: |
-| 공인 IP | |
-| SSH 키 위치 | 정민 노트북 `C:\Users\<이름>\.ssh\` |
-| Autonomous DB | 이름: / 접속 정보: VM `deploy/.env` |
+| VM | 2대. OS: Oracle Linux 9.8 / 사용자: `opc` / Shape: ARM(aarch64) 4 OCPU / 메모리: 24GB (스왑 5GB 기본) / 디스크 100GB |
+| VM 용도 | 1번: 운영 (web + ai + caddy) / 2번: **보류** |
+| 권한 | 공인 IP 와 SSH 키만 받음. **OCI 콘솔 권한 없음** (인스턴스·Security List 조작 불가) |
+| 열린 포트 | 22, 80, 443 (10/16 1번 VM 에서 외부 접속 확인). 2번 VM 은 미확인 |
+| 공인 IP | 정민 PC 의 메모 (문서에 적지 않음) |
+| SSH 키 위치 | 정민 노트북 저장소 폴더의 `secret/` (gitignore 됨) |
+| Autonomous DB | **정민 개인 Free Tier 계정**에서 생성 / 이름: / 접속 정보: VM `deploy/.env` |
+| OpenAI 키 | 주최 측 서비스 전용 키. VM `deploy/.env` 에만 (DECISIONS D15) |
 
 ## 1. 접속
 ```bash
@@ -36,6 +40,8 @@ ssh -i ~/.ssh/<키파일>.key <사용자>@<공인IP>      # Git Bash
 ## 2. 최초 세팅 (VM, 한 번만)
 
 ### 2-1. 스왑 (메모리 2GB 미만이면 필수) `[검증됨]`
+> 대회 VM(24GB, 스왑 5GB)은 **건너뛴다.**
+
 메모리가 작으면 dnf/apt 와 이미지 빌드가 멈춘다. Docker 설치 **전에** 한다.
 ```bash
 sudo dd if=/dev/zero of=/swapfile2 bs=1M count=4096 status=progress
@@ -61,6 +67,8 @@ sudo firewall-cmd --reload
 sudo firewall-cmd --list-services      # http https 가 보여야 함
 ```
 - 메모리 500MB VM 에서 dnf 첫 실행은 수 분간 출력이 없다. 끊지 말고 새 창에서 `top` 으로 진행 여부를 본다.
+- **대회 VM 은 firewalld 가 ssh 만 허용한 상태로 받았다 (10/16).** 위 firewall-cmd 세 줄을 빼먹으면 Security List 가 열려 있어도 외부에서 접속되지 않는다.
+- aarch64 에서도 위 저장소로 설치된다 `[미검증]`. 실패하면 `uname -m` 결과와 dnf 오류를 그대로 기록한다.
 
 ### 2-3. Ubuntu `[미검증]`
 ```bash
@@ -78,6 +86,11 @@ sudo netfilter-persistent save
 - "VM 안에서는 되는데 밖에서는 안 된다" 면 거의 이 iptables 문제다.
 
 ### 2-4. OCI 콘솔: Security List `[검증됨]`
+> 대회 VM 은 콘솔 권한이 없어 이 절을 할 수 없다. 대신 **80, 443 이 이미 열려 있음을 확인했다 (10/16, 1번 VM)**.
+> 확인 방법: VM 에서 `sudo firewall-cmd --add-port=80/tcp`(임시) → `sudo python3 -m http.server 80` → 정민 PC PowerShell `Test-NetConnection <공인IP> -Port 80` 이 `True` → 끝나면 `sudo firewall-cmd --reload`.
+> `False` 면 대회장 와이파이가 막는 것일 수 있으니 휴대폰 핫스팟으로 한 번 더 본 뒤 주최 측에 문의한다.
+
+(아래는 콘솔 권한이 있을 때의 절차)
 인스턴스 → Primary VNIC 의 Subnet → Security Lists → Ingress Rules → Add
 - Source CIDR `0.0.0.0/0`, Protocol TCP, **Source Port Range 는 비움**, **Destination Port Range `80`** (같은 방식으로 `443`)
 - 리허설 때 포트를 Source Port 칸에 넣어 외부 접속이 전부 막혔다. 표에서 `80` 이 Destination 열에 보이는지 확인할 것.
@@ -100,12 +113,18 @@ chmod +x deploy/deploy.sh
 cd ~/<저장소> && ./deploy/deploy.sh
 ```
 - `git pull` → ai, web 순서로 이미지 빌드 → 실행 → `/api/health` 확인까지 자동. 마지막 줄 `배포 완료: <커밋>`
-- **첫 빌드 시간**: 메모리 500MB + 스왑 4GB VM 에서 약 30분. 메모리 2GB 이상이면 훨씬 짧다 `[미검증]`
+- **첫 빌드 시간**: 메모리 500MB + 스왑 4GB VM 에서 약 30분. 대회 VM(24GB)은 훨씬 짧을 것으로 본다 `[미검증]`. 첫 배포 때 걸린 시간을 여기에 기록한다
+- 이미지는 VM(ARM)에서 직접 빌드한다. CI 의 `docker` 잡은 x86 에서 빌드만 확인하므로 ARM 전용 문제는 잡지 못한다
 - SSH 가 끊겨도 계속되게: `nohup ./deploy/deploy.sh > deploy.log 2>&1 & tail -f deploy.log`
 - 확인: 브라우저 `http://<공인IP>/api/health` → `{"ok":true,"data":{"web":"up","ai":"up"}}`
 - 주소창에 `http://` 를 직접 쓴다. 브라우저가 https 로 바꾸면 연결 실패로 보인다
 
 ## 5. Autonomous DB 연결 (지갑 없는 TLS) `[검증됨]`
+> 대회에서는 주최 측 테넌시가 아니라 **정민 개인 Free Tier 계정**에 ADB 를 만든다 (DECISIONS D14). 공용 엔드포인트 + ACL 방식이라 테넌시가 달라도 접속 방법은 같다.
+> - ACL 에 넣을 IP: **VM 공인 IP** (2번 VM 을 쓰게 되면 그 IP 도), **대회장 와이파이 공인 IP** (영진 노트북용, 5-1절)
+> - VM 에서 ADB 로 나가는 1522 포트 확인: `timeout 5 bash -c '</dev/tcp/<접속 문자열의 host>/1522' && echo adb-ok` `[미검증]`
+> - 개인 계정 무료 ADB 한도(2개)와 홈 리전 제한은 아래 그대로 적용된다
+
 **생성** (Oracle Database → Autonomous Database → Create)
 - Workload: Transaction Processing / Always Free 켬 / 버전 23ai
 - Network access: Secure access from allowed IPs and VCNs only → VM 공인 IP 추가
@@ -159,6 +178,8 @@ END;
 - 이미 실행한 문장은 다시 돌리지 않는다. 변경은 `ALTER TABLE` 로 추가된다
 
 ## 6. OpenAI 연결 `[미검증]`
+주최 측 키는 LLM 서비스 전용이다 (코딩 도구 사용 불가). **VM 의 `deploy/.env` 에만** 넣는다 (DECISIONS D15).
+- VM 에서 OpenAI 로 나가는 통신은 확인됨 (10/16, `curl https://api.openai.com` → 421 응답 = 연결은 됨). 키 동작은 아래 순서로 확인한다
 ```
 OPENAI_API_KEY=<주최 측 키>
 OPENAI_MODEL=gpt-5-mini
@@ -186,8 +207,9 @@ git checkout main            # 복구 후 다음 deploy.sh 의 git pull 을 위�
 5. Security List: 80, 443 이 **Destination Port** 에 있는가
 6. `ai: down` — ai 로그, `OPENAI_API_KEY`
 7. db-check 실패 — 5절의 원인 목록
-8. VM 이 응답 없음 — 콘솔에서 Reboot (5~15분). 그동안 로컬 실행으로 시연 준비
+8. VM 이 응답 없음 — 콘솔에서 Reboot (5~15분). 그동안 로컬 실행으로 시연 준비. **대회 VM 은 콘솔 권한이 없으므로 주최 측에 재부팅을 요청한다**
 
 ## 9. HTTPS `[미검증]`
 `deploy/.env` 의 `SITE_ADDRESS` 를 `<IP를-하이픈으로>.sslip.io` 로 바꾸고 `up -d --force-recreate caddy`. Caddy 가 인증서를 자동 발급한다.
+- 대회 VM 은 80, 443 이 모두 열려 있어 발급 조건을 갖췄다 (10/16). 첫 배포에서 `https://<IP를-하이픈으로>.sslip.io/api/health` 로 확인하고 결과를 기록한다. 실패하면 `SITE_ADDRESS=:80` 으로 되돌린다.
 주제가 마이크·카메라·위치 같은 브라우저 기능을 쓰면 HTTPS 가 필요하다. sslip.io 발급이 실패하면 DuckDNS 같은 무료 서브도메인을 쓴다.
