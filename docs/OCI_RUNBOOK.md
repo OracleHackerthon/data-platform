@@ -68,7 +68,7 @@ sudo firewall-cmd --list-services      # http https 가 보여야 함
 ```
 - 메모리 500MB VM 에서 dnf 첫 실행은 수 분간 출력이 없다. 끊지 말고 새 창에서 `top` 으로 진행 여부를 본다.
 - **대회 VM 은 firewalld 가 ssh 만 허용한 상태로 받았다 (10/16).** 위 firewall-cmd 세 줄을 빼먹으면 Security List 가 열려 있어도 외부에서 접속되지 않는다.
-- aarch64 에서도 위 저장소로 설치된다 `[미검증]`. 실패하면 `uname -m` 결과와 dnf 오류를 그대로 기록한다.
+- aarch64 에서도 위 저장소로 설치된다 `[검증됨: 10/16 대회 1번 VM, docker-ce 29.9.1, compose v5.6.0]`. git 도 기본으로 없어서 `sudo dnf install -y git` 이 필요했다.
 
 ### 2-3. Ubuntu `[미검증]`
 ```bash
@@ -104,6 +104,7 @@ cd <저장소>
 cp .env.example deploy/.env
 chmod +x deploy/deploy.sh
 ```
+- PC 에서 값을 채운 `.env` 를 올려도 된다: `scp -i <키> .env opc@<공인IP>:~/<저장소>/deploy/.env` → VM 에서 `chmod 600 deploy/.env && sed -i 's/\r$//' deploy/.env` (Windows 줄바꿈 제거). PC 의 `.env.example` 은 **복사**한다. 이름을 바꾸면 커밋된 파일이 지워진다 (10/16 실제로 있었음)
 - 공개 저장소라 Deploy Key 없이 clone 된다. VM 의 저장소에서는 push 하지 않는다 (권한 없음).
 - `deploy/.env` 수정은 `vi deploy/.env` → `i` 로 입력 → `Esc` → `:wq`. 값에 따옴표를 붙이지 않는다.
 - OpenAI 키와 DB 값이 비어 있어도 `/api/health` 는 동작한다. 배포 경로부터 먼저 확인한다.
@@ -113,7 +114,7 @@ chmod +x deploy/deploy.sh
 cd ~/<저장소> && ./deploy/deploy.sh
 ```
 - `git pull` → ai, web 순서로 이미지 빌드 → 실행 → `/api/health` 확인까지 자동. 마지막 줄 `배포 완료: <커밋>`
-- **첫 빌드 시간**: 메모리 500MB + 스왑 4GB VM 에서 약 30분. 대회 VM(24GB)은 훨씬 짧을 것으로 본다 `[미검증]`. 첫 배포 때 걸린 시간을 여기에 기록한다
+- **첫 빌드 시간**: 메모리 500MB + 스왑 4GB VM 에서 약 30분. **대회 1번 VM(ARM 4코어, 24GB)은 약 3분** `[검증됨: 10/16]`
 - 이미지는 VM(ARM)에서 직접 빌드한다. CI 의 `docker` 잡은 x86 에서 빌드만 확인하므로 ARM 전용 문제는 잡지 못한다
 - SSH 가 끊겨도 계속되게: `nohup ./deploy/deploy.sh > deploy.log 2>&1 & tail -f deploy.log`
 - 확인: 브라우저 `http://<공인IP>/api/health` → `{"ok":true,"data":{"web":"up","ai":"up"}}`
@@ -145,10 +146,11 @@ curl -s http://localhost/api/db-check     # {"ok":true,"data":{"result":1}}
 ```
 - 시간 초과: ACL 에 VM IP 가 없음 (VM 공인 IP 가 바뀌면 ACL 도 갱신)
 - 접속 거부: mTLS 가 아직 필수 (변경 반영에 1~2분)
-- `ORA-01017`: 비밀번호 틀림
+- `ORA-01017`: 사용자가 없거나 비밀번호 틀림 (DB 까지는 닿았다는 뜻. ACL·접속 문자열은 정상)
+- `ORA-01045`: 사용자는 있는데 `CREATE SESSION` 권한이 없음 (5-1 의 GRANT 를 빼먹음)
 - 원인 로그: `docker compose -f deploy/docker-compose.yml logs --tail 20 web`
 
-### 5-1. 앱 전용 사용자, 노트북 접속, 테이블 생성 `[미검증]`
+### 5-1. 앱 전용 사용자, 노트북 접속, 테이블 생성 `[APP 사용자: 검증됨 10/16 / 노트북 접속: 미검증]`
 ADMIN 은 DB 전체 권한이다. 앱(VM)과 영진 노트북은 **APP 사용자**로 접속하고, ADMIN 비밀번호는 정민만 갖는다 (DECISIONS D1).
 
 **APP 사용자 만들기** (ADB 상세 → Database actions → SQL, ADMIN 으로 로그인, 한 번만)
@@ -163,7 +165,10 @@ BEGIN
 END;
 /
 ```
+- **한 문장씩 실행한다** (커서를 두고 Ctrl+Enter, `BEGIN … END;` 는 드래그로 선택). 10/16 에 한 번에 돌렸더니 `CREATE USER` 가 비밀번호 규칙(`ORA-28219`, 대문자 없음)으로 실패하고 뒤 문장이 모두 "APP 없음" 으로 실패했다. 그 뒤 `CREATE USER` 만 다시 돌려 GRANT 가 빠져 `ORA-01045` 가 났다.
+- 확인: `SELECT username, account_status FROM dba_users WHERE username = 'APP';` → `OPEN`
 - VM `deploy/.env` 의 `DB_USER`/`DB_PASSWORD` 를 APP 으로 바꾸고 `up -d --force-recreate web` → `/api/db-check`
+- **Database Actions(웹 화면)도 ACL 을 탄다.** 지금 PC 의 공인 IP 가 없으면 `403 IP Address Rejected`. `ipconfig` 의 `192.168.x.x` 는 내부 주소라 소용없다. "what is my ip" 로 본 공인 IP 를 넣는다
 
 **영진 노트북에서 접속 (대회 당일)**
 1. 대회장 와이파이의 공인 IP 확인 (영진 노트북 브라우저에서 "what is my ip")
