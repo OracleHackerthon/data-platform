@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+import { RoleProvider } from "@/components/role/role-provider";
+import { RoleToggle } from "@/components/role/role-toggle";
+import { Toaster } from "@/components/ui/sonner";
 
 
 // 빌드 시 외부 폰트 다운로드를 피하려고 시스템 폰트를 쓴다
@@ -15,16 +16,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className={cn("h-full antialiased", "font-sans")}>
       <body className="min-h-full flex flex-col font-sans">
+        <RoleProvider>
         <header className="border-b">
           <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
-            <Link href="/" className="font-semibold focus-visible:outline-2 focus-visible:outline-ring">제조 데이터 검증·거래</Link>
-            <div className="flex items-center gap-4">
-              <Link href="/dashboard" className="text-sm underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-ring">대시보드</Link>
-              <Badge variant="secondary">현재 역할: 공장</Badge>
-            </div>
+            <RoleToggle />
           </div>
         </header>
         {children}
+        <Toaster theme="light" />
+        </RoleProvider>
       </body>
     </html>
   );
