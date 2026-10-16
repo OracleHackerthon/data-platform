@@ -70,7 +70,7 @@
   "taskCard": { "title": "공정 불량 예측", "problem": "…", "metric": "불량 검출률(recall)", "dataNeeded": "…" }
 }
 ```
-- `metrics` 위 7개는 화면 표시용, 아래 4개는 지수용 SQL 지표다. `meaningfulColumnCount` 는 결측 30% 이상 컬럼을 뺀 수, `validRowCount` 는 결측 없는 행 수, `consistencyRate` 는 결측이 아닌 셀 비율 `(초안, 정의는 영진·승연이 맞춘다)`
+- `metrics` 위 7개는 화면 표시용, 아래 4개는 지수용 SQL 지표다. `meaningfulColumnCount` 는 결측 30% 이상 컬럼을 뺀 수, `validRowCount` 는 의미 컬럼(결측 30% 미만)에 결측이 없는 행 수 (시드 데이터 기준 1,525), `consistencyRate` 는 결측이 아닌 셀 비율 `(초안, 정의는 영진·승연이 맞춘다)`
 - 오류: 403 역할 / 404 데이터셋 없음 / 502 AI 실패 (이때 `TASKS` 는 바꾸지 않는다. 화면은 "다시 시도" 를 보여 준다)
 
 ### 가치평가지수 형태 (`valueIndex`, 진단·과제 상세·카탈로그가 같이 쓴다)
@@ -110,9 +110,9 @@
 - 지수 계산은 파이썬(`ai/value_index.py`)이 한다. LLM 은 판정 3개(컬럼명 표기 명확성, 범주형 기준 명확성, 정보 범주 수)와 문장(리포트, 과제 카드, 개선 제안)만 만든다. 프롬프트 `ai/prompts/diagnose.md`, 출력은 JSON 으로 고정한다.
 
 ### B-1. 공개 정책 — `PUT /api/tasks/[id]/policy` (담당: 영진)
-- 요청: `{ "role": "factory", "synthLevel": "medium", "blockIndustry": "자동차 부품" | null }`
+- 요청: `{ "role": "factory", "synthLevel": "medium", "blockIndustry": "반도체 제조" | null }`
 - 하는 일: 정책 저장 + `status` 를 `"published"` 로
-- 응답 data: `{ "taskId": 1, "synthLevel": "medium", "blockIndustry": "자동차 부품", "status": "published" }`
+- 응답 data: `{ "taskId": 1, "synthLevel": "medium", "blockIndustry": "반도체 제조", "status": "published" }`
 - `synthLevel`: `"low" | "medium" | "high"`. 합성 데이터는 `medium` 만 준비하므로 화면은 low·high 를 비활성으로 둔다.
 - `blockIndustry`: `VENDORS.industry` 값 중 하나. 업체 D 의 업종과 같은 값을 시드로 둔다.
 - 오류: 400 값 오류 / 403 역할 / 409 진단 전(과제 카드 없음)
