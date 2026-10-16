@@ -182,17 +182,37 @@ END;
 - Database actions → SQL 에 **APP 으로 로그인** → 새로 추가된 문장만 붙여 넣고 Run Script(F5)
 - 이미 실행한 문장은 다시 돌리지 않는다. 변경은 `ALTER TABLE` 로 추가된다
 
-## 6. OpenAI 연결 `[미검증]`
+### 5-2. 시연 데이터 적재 `[검증됨 10/16]`
+파일 만들기는 `research/README.md` "시연 데이터 다시 만들기" (`build_seed.py`, 시드 고정이라 다시 돌려도 같은 파일). 출력 폴더의 SQL 을 **APP 으로** 순서대로 한 번씩 실행한다.
+
+| 순서 | 파일 | 내용 | 확인 SQL → 기대값 |
+|---|---|---|---|
+| 1 | `01_schema.sql` | 테이블 9개 | `SELECT table_name FROM user_tables;` → 9개 |
+| 2 | `02_seed_meta.sql` | 데이터셋 1, 과제 1(draft), 업체 A~D (모두 가상) | `SELECT id, alias, industry FROM vendors;` |
+| 3 | `03_raw_rows.sql` | 원본 1,567행 | `SELECT COUNT(*), SUM(label) FROM raw_rows;` → 1567, 104 |
+| 4 | `04_synth_rows.sql` | 합성 1,000행 | `SELECT COUNT(*), SUM(label) FROM synth_rows;` → 1000, 66 |
+| 5 | `05_predictions.sql` | 업체 A/B/C 예측값 | `SELECT vendor_id, COUNT(*) FROM predictions GROUP BY vendor_id;` → 각 1567 |
+| 6 | `06_seed_submissions.sql` | 업체 A·C 시드 제출 (채점 SQL) | `SELECT vendor_id, recall FROM submissions;` → A 0.5481, C 0.4231 |
+| 7 | `ALTER TABLE datasets ADD (aggregation_cycle VARCHAR2(50));` 후 `UPDATE datasets SET aggregation_cycle = '주기없음 (웨이퍼 단위 발생)' WHERE id = 1;` `COMMIT;` | 10/16 계약 추가분 | |
+
+- 지금 DB 구조는 `01_schema.sql` + 7번 ALTER 다. `web/db/schema.sql` 에는 아직 예시만 있다 (10/17 기준, 영진이 옮길 것)
+- 3~5 가 Database Actions 편집기에서 느리면: Data Load → 기존 테이블로 `raw_rows.csv` / `synth_rows.csv` / `predictions.csv` 업로드 (헤더가 컬럼 이름과 같음, TS 형식 `YYYY-MM-DD HH24:MI:SS`)
+- 10/16 적재는 정민 PC(ACL 등록)에서 `web/node_modules/oracledb` 로 같은 SQL 을 실행했다. 접속 정보는 저장소 루트 `.env` 에서만 읽었다
+- 처음부터 다시: `DROP TABLE` 을 역순(access_log, deals, submissions, predictions, vendors, tasks, synth_rows, raw_rows, datasets)으로 실행 후 1번부터. **시연 중 되돌리기는 이것이 아니라 `/api/demo/reset`** (B-6)
+
+## 6. OpenAI 연결 `[검증됨 10/16]`
 주최 측 키는 LLM 서비스 전용이다 (코딩 도구 사용 불가). **VM 의 `deploy/.env` 에만** 넣는다 (DECISIONS D15).
-- VM 에서 OpenAI 로 나가는 통신은 확인됨 (10/16, `curl https://api.openai.com` → 421 응답 = 연결은 됨). 키 동작은 아래 순서로 확인한다
 ```
 OPENAI_API_KEY=<주최 측 키>
 OPENAI_MODEL=gpt-5-mini
 ```
 ```bash
 docker compose -f deploy/docker-compose.yml up -d --force-recreate ai
-curl -s -X POST http://localhost/api/ai-example -H "Content-Type: application/json" -d '{"text":"테스트 문장입니다"}'
+# 진단 한 번 (공장 역할). 10~20초 걸린다. valueIndex.score 가 나오면 키가 동작한다
+curl -s -X POST http://localhost/api/datasets/1/diagnose -H "Content-Type: application/json" -d '{"role":"factory"}' | head -c 300
+curl -s -X POST http://localhost/api/demo/reset   # 확인 뒤 시드 상태로 되돌린다
 ```
+- 10/16 확인: 시드 데이터로 3회 연속 지수 555 (`gpt-5-mini` 는 temperature 를 낮출 수 없어 판정 규칙을 프롬프트에 고정했다, #18)
 - 실패하면 `docker compose -f deploy/docker-compose.yml logs --tail 30 ai` (키 오류 401, 모델 이름 오류 404, 한도 429)
 
 ## 7. 롤백
