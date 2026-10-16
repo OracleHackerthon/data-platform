@@ -5,6 +5,9 @@
 *.key
 *.pem
 wallet*/
+# 로컬에 둔 SSH 키 등 비밀 파일 폴더 (정민)
+secret/
+secrets/
 
 # Node / Next.js
 node_modules/

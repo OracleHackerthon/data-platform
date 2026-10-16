@@ -41,9 +41,9 @@ gh repo clone OracleHackerthon/<저장소>
 
 AI 코딩 도구:
 - 예원·영진: `npm install -g @openai/codex` → `codex login` (개인 ChatGPT 계정)
-- 승연: Codex + 개인 OpenAI API 키 (사용 한도를 꼭 설정)
+- 승연: Codex (개인 ChatGPT 계정). **OpenAI API 키는 로컬에서 쓰지 않습니다**
 - `~/.codex/AGENTS.md` (개인 전역 규칙)가 있다면 대회 기간에는 비워 두세요. 팀 규칙과 섞입니다.
-- **주최 측 OpenAI 키는 서비스 코드에만** 씁니다. Codex에 넣지 않습니다.
+- **주최 측 OpenAI 키는 VM 의 `deploy/.env` 에만** 있습니다. 노트북, Codex, 채팅에 넣지 않습니다 (DECISIONS D15).
 
 ## 2. 로컬 실행
 
@@ -55,18 +55,19 @@ Copy-Item ..\.env.example .env.local    # AI_SERVICE_URL=http://localhost:8000
 npm run dev                             # http://localhost:3000
 ```
 
-**ai (승연만. 개인 API 키 사용. 예원·영진은 MOCK 으로 개발하므로 띄우지 않아도 됩니다)**
+**ai (승연만. 예원·영진은 MOCK 으로 개발하므로 띄우지 않아도 됩니다)**
 ```powershell
 cd ai
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-Copy-Item ..\.env.example .env          # OPENAI_API_KEY 채우기
+Copy-Item ..\.env.example .env          # OPENAI_API_KEY 는 비워 둔다
 uvicorn main:app --reload --port 8000
 ```
 - `Activate.ps1` 실행이 막히면: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
+- 로컬에는 키가 없으므로 OpenAI 를 부르는 엔드포인트는 실패한다. 로컬에서는 엔드포인트 형태를 `mock` 으로 맞추고, 프롬프트 결과는 정민이 VM 에 배포한 뒤 서비스 주소에서 확인한다 (D15).
 
-연결 확인: http://localhost:3000 에서 문장을 보내 요약이 오면 성공. `http://localhost:3000/api/health` 에서 `"ai":"up"` 확인.
+연결 확인: `http://localhost:3000/api/health` 에서 `"ai":"up"` 확인. 요약(OpenAI) 동작은 VM 배포본에서 확인한다.
 
 ## 3. 작업 흐름 (Codex에게 말로 시킵니다)
 
