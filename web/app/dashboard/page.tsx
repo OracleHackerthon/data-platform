@@ -1,6 +1,7 @@
 "use client";
 
 import { ShieldCheck } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -129,6 +130,10 @@ export default function DashboardPage() {
         </Card>
       </section>
 
+      {data.valueIndex && !busy && <Card>
+        <CardHeader><CardTitle>다음 단계: 과제 등록</CardTitle><CardDescription>진단으로 추천 과제가 만들어졌습니다. 공개 범위를 정하고 업체에 공개하세요.</CardDescription></CardHeader>
+        <CardContent><Button render={<Link href="/dashboard/register" />}>{data.status === "published" ? "등록 정보 보기" : "과제 등록하기"}</Button></CardContent>
+      </Card>}
     </main>
   );
 }

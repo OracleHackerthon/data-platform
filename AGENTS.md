@@ -14,12 +14,19 @@
 | 경로 | 담당 |
 |---|---|
 | `web/app/` 의 화면(`page.tsx`), `web/app/layout.tsx`, `web/app/globals.css`, `web/components/<기능>/` | 예원 |
-| `web/app/api/`, `web/lib/db.ts`, `web/db/` | 영진 |
-| `ai/`, `research/` | 승연 |
-| `web/lib/api.ts`, `web/lib/ai-client.ts`, `web/lib/types.ts`, `web/components/ui/`, `web/package.json`, `ai/requirements.txt`, `docs/`, `AGENTS.md` | 정민 |
+| `web/app/api/`, `web/lib/db.ts`, `web/db/` | 영진 (예원도 수정 가능, 아래 D17) |
+| `ai/`, `research/` | 승연 (예원도 수정 가능, 아래 D17) |
+| `web/lib/api.ts`, `web/lib/ai-client.ts`, `web/lib/types.ts`, `web/components/ui/`, `web/package.json`, `ai/requirements.txt`, `docs/`, `AGENTS.md` | 정민 (예원도 수정 가능. 단 `docs/` 는 `PLAN.md`·`API_CONTRACT.md`·`DEMO_SCRIPT.md` 만, `AGENTS.md` 는 정민만. 아래 D17) |
 | `deploy/`, `Dockerfile`, `.github/`, `.codex/`, `.agents/`, `.claude/`, `CLAUDE.md`, `web/AGENTS.md`, `web/CLAUDE.md` | 정민 |
 
 남의 경로를 바꿔야 하면 작업을 멈추고, 무엇이 필요한지 사용자에게 알린다.
+
+**예원이 전권을 갖고 진행한다** (10/17, DECISIONS D17). 이 절의 다른 규칙보다 우선한다.
+- 고칠 수 있는 곳: `web/` 전체(정민 공통 파일 `web/lib/{api,ai-client,types}.ts`, `web/components/ui/`, `web/package.json` 포함), `ai/` 전체(`ai/requirements.txt` 포함), `research/`, `docs/PLAN.md`, `docs/API_CONTRACT.md`, `docs/DEMO_SCRIPT.md`.
+- 예원이 정하는 것: 기능 범위·우선순위, 화면, API 계약(요청·응답 형태), 패키지 추가·`npx shadcn`. 이 항목들은 "정민 승인", "정민에게 알린다" 대신 예원이 결정한다. 계약을 바꾸면 같은 PR 에서 `docs/API_CONTRACT.md` 와 `web/lib/types.ts` 를 함께 고친다.
+- **추가·수정까지만 예원 판단이다. 삭제는 정민에게 묻는다.** 삭제란 파일·폴더 삭제, 기존 API 경로·응답 필드·함수·컴포넌트·화면 제거, 패키지 제거, DB 테이블·컬럼 삭제(`DROP`, `ALTER ... DROP`, 데이터 `DELETE`) 를 말한다. 이런 변경이 필요하면 실행하기 전에 멈추고 "⚠️ 삭제 경고: <지울 것> 을 지우려 합니다. 정민에게 확인해 주세요" 라고 알린 뒤, 정민이 승인할 때까지 하지 않는다. 기존 코드를 고치면서 줄 몇 개가 빠지는 정도는 삭제로 보지 않는다.
+- 정민에게 남는 것: `deploy/`, `Dockerfile`, `.github/`, `.codex/`, `.agents/`, `.claude/`, `AGENTS.md`·`CLAUDE.md`, 머지·배포·서버(OCI) 작업. 필요하면 정민에게 요청한다.
+- 그대로 지키는 것: 연결 규칙, Oracle SQL, "금지" 절(비밀값, main 직접 커밋 금지 등), 삭제·충돌·강제 push 규칙. 영진·승연이 같은 파일을 작업 중일 수 있으니 고치기 전에 알린다.
 
 ### 10/17 임시 분담 (남은 화면, 시연 전까지)
 예원 담당인 화면 중 아래 경로는 표의 사람이 만든다. **표에 적힌 경로만** 고친다.
@@ -51,7 +58,7 @@
 ## 금지
 - 키·비밀번호·DB 접속 정보를 코드나 커밋에 넣지 않는다. 값은 `.env` 류 파일에만, 키 이름은 `.env.example` 에.
 - 비밀값에 `NEXT_PUBLIC_` 접두사를 쓰지 않는다 (브라우저에 노출된다).
-- 정민 승인 없이 패키지를 추가하지 않는다.
+- 정민 승인 없이 패키지를 추가하지 않는다 (예원은 본인이 결정, D17).
 - 요청받지 않은 배포, OCI 리소스 생성·삭제를 하지 않는다.
 - main 에 직접 커밋·푸시하지 않는다.
 
@@ -74,7 +81,7 @@
 - 완료 기준: (web) `npm run build`, `npm run lint` 통과 / (ai) 서버가 뜨고 해당 엔드포인트 응답 확인 / 화면에서 직접 동작 확인.
 - PR 본문에 바뀐 파일과 확인 방법을 한두 줄로 적는다.
 - **화면(프론트엔드)은 예원이 정한다** (10/17). 화면 구성, 디자인, 색·크기, 화면 경로, 부품 쓰는 방식은 예원의 판단을 따르고 리뷰에서 막지 않는다. `ui-design`·`shadcn-ui` 스킬과 `docs/design-library/` 는 예원이 필요할 때 참고한다.
-- 화면 작업에서 지킬 것은 백엔드를 건드리지 않는 것뿐이다:
+- 화면 작업에서 지킬 것은 백엔드를 건드리지 않는 것뿐이다 (예원은 예외: 위 "소유권" 의 예원 전권 문단을 따른다):
   - 고치지 않는다: `web/app/api/`, `web/lib/db.ts`, `web/db/` (영진), `ai/` (승연), `web/lib/api.ts`·`web/lib/ai-client.ts`·`web/lib/types.ts`·`web/package.json`·`deploy/` (정민)
   - 화면은 `/api/*` 만 부른다 (`ai:8000`·`localhost:8000` 직접 호출, DB 접근 금지). API 응답 형태가 안 맞으면 화면에서 고치지 말고 사용자에게 알린다 (계약 변경)
   - 화면 안에 가짜 데이터를 넣지 않는다 (DECISIONS D4). 패키지 추가와 `npx shadcn` 실행은 정민 승인 후

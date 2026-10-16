@@ -41,7 +41,7 @@ gh pr checkout <번호>
 - ai: `cd ai`, `python -c "import main"`
 - 연결 규칙: 화면 파일에서 `localhost:8000`·`ai:8000` 직접 호출, `ai/llm.py` 밖의 `openai` import, `web/lib/db.ts` 밖의 `oracledb` 사용
 - 계약: 바뀐 `/api/*` 경로와 요청·응답 필드를 `docs/API_CONTRACT.md` 와 한 줄씩 대조
-- 화면 PR: 디자인·화면 구성·색·크기·화면 경로는 지적하지 않는다 (예원 결정, AGENTS.md). 백엔드 경로(`web/app/api/`, `web/lib/db.ts`, `web/db/`, `web/lib/{api,ai-client,types}.ts`, `web/package.json`, `ai/`, `deploy/`)를 바꿨으면 [보통], 화면 안 가짜 데이터는 [보통]
+- 화면 PR: 디자인·화면 구성·색·크기·화면 경로는 지적하지 않는다 (예원 결정, AGENTS.md). 백엔드 경로(`web/app/api/`, `web/lib/db.ts`, `web/db/`, `web/lib/{api,ai-client,types}.ts`, `web/package.json`, `ai/`, `deploy/`)를 바꿨으면 [보통], 화면 안 가짜 데이터는 [보통]. 단 예원 PR 은 전권(DECISIONS D17)이라 `web/`·`ai/`·`research/`·`docs/{PLAN,API_CONTRACT}.md` 변경, 계약 변경, 패키지 추가를 소유권·승인 이유로 지적하지 않는다. `deploy/`·`.github/`·에이전트 설정 변경만 [보통]. 단 삭제(파일 삭제, API 경로·응답 필드·함수·컴포넌트·화면 제거, 패키지 제거, DB `DROP`·`DELETE`)가 있으면 [보통]으로 적고 정민 승인 여부를 확인한다 (`git diff --name-status origin/main...HEAD` 의 `D`, 큰 삭제 블록). 비밀값·연결 규칙 검사와 계약 문서·`types.ts` 일치 확인은 그대로
 
 **MOCK**: 응답 필드 이름·타입·구조가 계약과 정확히 같은가, `MOCK` 주석이 있는가, DB·AI·외부 호출이 없는가, API 담당자 경로인가.
 
