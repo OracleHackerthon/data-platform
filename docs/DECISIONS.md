@@ -44,7 +44,7 @@
 |---|---|---|
 | `health` | `web/app/api/health/`, `ai/main.py` 의 `/health` | 끝까지 유지 (배포 확인용) |
 | `db-check` | `web/app/api/db-check/` | 끝까지 유지 (DB 확인용) |
-| `ai-example` | `web/app/page.tsx`(샘플 화면), `web/app/api/ai-example/`, `ai/main.py` 의 `/example`·`ExampleIn`, `ai/prompts/example.md`, `API_CONTRACT.md` 의 샘플 항목 | 대회 당일 OpenAI 연결을 확인할 때까지. 확인 직후 정민이 한 PR 로 제거 (`MERGER_CHECKLIST.md` 3-1) |
+| `ai-example` | `web/app/page.tsx`(샘플 화면), `web/app/api/ai-example/`, `ai/main.py` 의 `/example`·`ExampleIn`, `ai/prompts/example.md`, `API_CONTRACT.md` 의 샘플 항목 | **10/16 제거됨** (VM 배포본에서 OpenAI 연결 확인 후, `MERGER_CHECKLIST.md` 3-1) |
 - `ai-example` 은 당일 OpenAI 키를 확인하는 유일한 수단이다. 그 전에 지우지 않는다.
 - 여러 사람 경로에 걸쳐 있어 팀원이 지울 수 없다. 정민이 지운다.
 

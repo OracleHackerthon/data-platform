@@ -51,7 +51,7 @@ Codex 가 대화를 시작할 때 사용자가 누구인지 확인하고, 이 �
 
 ## 예원 (화면·발표)
 - 수정할 수 있는 곳: `web/app/**/page.tsx`, `web/app/layout.tsx`, `web/app/globals.css`, `web/components/<기능>/`, `docs/DEMO_SCRIPT.md`
-- 참고할 코드: `web/app/page.tsx` (샘플 화면: 버튼 → `/api/*` 호출 → 결과 표시), `web/components/ui/` 의 부품 목록
+- 참고할 코드: `docs/PLAN.md` B-0 (화면 경로, 역할 상태), `web/lib/types.ts` (API 응답 타입), `web/components/ui/` 의 부품 목록
 - 로컬 실행: web 만. `web/.env.local` 은 `AI_SERVICE_URL=http://localhost:8000` 한 줄이면 된다. DB·OpenAI 정보는 필요 없다 (MOCK 으로 개발).
 - 주의
   - 화면은 `/api/*` 만 부른다. 상대 API 가 없으면 기다리지 말고 담당자에게 `$mock` 을 요청한다. 화면 안에 가짜 데이터를 넣지 않는다 (DECISIONS D4).
@@ -87,7 +87,7 @@ Codex 가 대화를 시작할 때 사용자가 누구인지 확인하고, 이 �
 
 ## 승연 (AI·EDA)
 - 수정할 수 있는 곳: `ai/` 전체 (`main.py`, `llm.py`, `config.py`, `prompts/`), `research/`
-- 참고할 코드: `ai/main.py` 의 `/example` (엔드포인트 형태), `ai/llm.py` 의 `ask`, `ai/prompts/example.md`
+- 참고할 코드: `ai/main.py` 끝의 주석 (엔드포인트 형태), `ai/llm.py` 의 `ask`·`load_prompt`, `docs/API_CONTRACT.md` 의 `/diagnose`
 - 로컬 실행: ai. 개인 OpenAI API 키를 `ai/.env` 에만 넣는다 (사용 한도 설정 필수). 주최 측 키는 쓰지 않는다. 확인은 `http://localhost:8000/docs` 에서 직접 실행.
 - 분석: `research/` 의 노트북에서 직접 한다. 서비스에 들어갈 로직만 `ai/` 로 옮긴다. 원본 데이터는 `research/data/raw/` (git 에 올라가지 않음).
 - 주의
