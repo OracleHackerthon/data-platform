@@ -136,10 +136,11 @@ A 는 "무엇을, 누구를 위해" (기획), B 는 "어떻게, 누가" (구현)
 ### B-0. 공통 설계 (10/16 설계안 C: 화면별 경로 + 역할 Context + API 공통 도우미)
 모든 기능이 같이 쓰는 뼈대다. 기능 절(B-1~B-6)보다 먼저 만든다.
 
-**화면 경로** (화면 파일은 모두 예원)
+**화면 경로** (화면 파일과 경로는 예원이 정한다. 아래는 현재 상태)
 | 경로 | 역할 | 시나리오 | 기능 | 부르는 API |
 |---|---|---|---|---|
-| `/dashboard` | 공장 | 1, 2 | B-1 | `GET /api/tasks/1?role=factory`, diagnose, policy |
+| `/dashboard` | 공장 | 1 | B-1 | `GET /api/tasks/1?role=factory`, diagnose |
+| `/dashboard/register` | 공장 | 2 | B-1 | `GET /api/tasks/1?role=factory`, policy (10/17 #22 에서 분리) |
 | `/catalog` | 스타트업 | 3 | B-2 | `GET /api/tasks` |
 | `/tasks/[id]` | 스타트업 | 3, 4 | B-2, B-3 | `GET /api/tasks/[id]`, submissions |
 | `/tasks/[id]/leaderboard` | 공장 | 5 | B-3, B-4 | leaderboard, `POST /api/deals` |
