@@ -26,8 +26,17 @@ export async function query<T = Record<string, unknown>>(
     const result = await conn.execute<T>(sql, binds, {
       outFormat: oracledb.OUT_FORMAT_OBJECT,
       autoCommit: true,
+      // 연결이 닫힌 뒤에도 JSON·리포트를 읽도록 CLOB을 문자열로 받는다.
+      fetchTypeHandler: (metadata) => {
+        if (metadata.dbType === oracledb.DB_TYPE_CLOB) {
+          return { type: oracledb.STRING };
+        }
+      },
     });
-    return result.rows ?? [];
+    // INSERT ... RETURNING 뒤 같은 연결에서 연 커서도 query로 읽는다.
+    // resultSet 옵션을 쓰지 않으므로 implicitResults의 첫 결과는 행 배열이다.
+    const implicitRows = result.implicitResults?.[0];
+    return result.rows ?? (Array.isArray(implicitRows) ? implicitRows as T[] : []);
   } finally {
     await conn.close();
   }

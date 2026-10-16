@@ -1,10 +1,10 @@
-// MOCK: deals - 실제 구현 전 임시 응답
-import { mockApi } from "@/app/api/_lib/mock-api";
+// 확정 계약에 따른 DB 기반 API
+import { realApi } from "@/app/api/_lib/real-api";
 
 export async function GET(req: Request) {
-  return mockApi(req, "deals");
+  return realApi(req, "deals");
 }
 
 export async function POST(req: Request) {
-  return mockApi(req, "request_contact");
+  return realApi(req, "request_contact");
 }
