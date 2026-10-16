@@ -108,9 +108,9 @@ export async function mockApi(req: Request, action: Action, context?: IdContext)
       case "submit": {
         requireTask(id, vendorId);
         const scores = [
-          { vendorId: 1, accuracy: 0.94, recall: 0.67, fpr: 0.04 },
-          { vendorId: 2, accuracy: 0.96, recall: 0.81, fpr: 0.02 },
-          { vendorId: 3, accuracy: 0.92, recall: 0.55, fpr: 0.06 },
+          { vendorId: 1, accuracy: 0.94, recall: 0.548, fpr: 0.04 },
+          { vendorId: 2, accuracy: 0.96, recall: 0.779, fpr: 0.02 },
+          { vendorId: 3, accuracy: 0.92, recall: 0.423, fpr: 0.06 },
         ].find((s) => s.vendorId === vendorId);
         if (!scores) return fail("이 업체의 예측값이 없습니다", 400);
         const submission = { ...scores, submissionId: state.nextSubmissionId++, createdAt: new Date().toISOString() };

@@ -1,10 +1,10 @@
 // MOCK: 데모 데이터와 메모리 상태 - 실제 구현 전 임시 응답
 // 단일 Node 프로세스용이다. 재시작 시 초기화되며 여러 서버 간 공유되지 않는다.
 export const vendors = [
-  { id: 1, alias: "업체 A", industry: "산업용 소프트웨어", name: "가상 분석 A", contact: "a@example.com", badges: { years: 7, referencesCnt: 15, maintenance: true, certified: true } },
-  { id: 2, alias: "업체 B", industry: "제조 AI", name: "가상 분석 B", contact: "b@example.com", badges: { years: 5, referencesCnt: 12, maintenance: true, certified: true } },
-  { id: 3, alias: "업체 C", industry: "로봇 소프트웨어", name: "가상 분석 C", contact: "c@example.com", badges: { years: 3, referencesCnt: 6, maintenance: true, certified: false } },
-  { id: 4, alias: "업체 D", industry: "반도체 제조", name: "가상 분석 D", contact: "d@example.com", badges: { years: 4, referencesCnt: 8, maintenance: false, certified: false } },
+  { id: 1, alias: "업체 A", industry: "제조 AI", name: "딥팹랩스(가상)", contact: "sales@deepfab.example", badges: { years: 7, referencesCnt: 15, maintenance: true, certified: true } },
+  { id: 2, alias: "업체 B", industry: "제조 AI", name: "센서로직AI(가상)", contact: "hello@sensorlogic.example", badges: { years: 3, referencesCnt: 4, maintenance: true, certified: false } },
+  { id: 3, alias: "업체 C", industry: "제조 AI", name: "큐에이마인드(가상)", contact: "contact@qamind.example", badges: { years: 12, referencesCnt: 30, maintenance: true, certified: true } },
+  { id: 4, alias: "업체 D", industry: "반도체 제조", name: "누리반도체 AI팀(가상)", contact: "ai@nuri-semi.example", badges: { years: 5, referencesCnt: 8, maintenance: false, certified: false } },
 ];
 
 export const metrics = {
@@ -91,8 +91,8 @@ function initialState(): MockState {
   return {
     diagnosed: false, status: "draft", synthLevel: "medium", blockIndustry: null,
     submissions: [
-      { submissionId: 1, vendorId: 1, accuracy: 0.94, recall: 0.67, fpr: 0.04, createdAt: "2026-10-16T00:00:00.000Z" },
-      { submissionId: 2, vendorId: 3, accuracy: 0.92, recall: 0.55, fpr: 0.06, createdAt: "2026-10-16T00:01:00.000Z" },
+      { submissionId: 1, vendorId: 1, accuracy: 0.94, recall: 0.548, fpr: 0.04, createdAt: "2026-10-16T00:00:00.000Z" },
+      { submissionId: 2, vendorId: 3, accuracy: 0.92, recall: 0.423, fpr: 0.06, createdAt: "2026-10-16T00:01:00.000Z" },
     ],
     deals: [], logs: [], nextSubmissionId: 3, nextDealId: 1, nextLogId: 1,
   };
@@ -136,7 +136,7 @@ export function dealResponse(deal: Deal, role: Role) {
       recommendedHigh: roundPrice(center + (max - min) * 0.1), valueIndex: valueIndex.score,
     } : null,
     parties: deal.status === "requested" ? null : {
-      factory: { name: "가상 반도체 공장", contact: "factory@example.com" },
+      factory: { name: "한빛반도체(가상)", contact: "품질팀장 · quality@hanbit-semi.example" },
       vendor: { name: vendor.name, contact: vendor.contact },
     },
   };
