@@ -90,6 +90,7 @@ export type AiDiagnoseRequest = {
     fileFormat: string;
     creditGrade: string;
     qualityCert: boolean;
+    aggregationCycle: string; // 논문 지표 "집계주기 규칙성"
   };
   columns: { name: string; type: "number" | "string" | "date" }[];
 };
