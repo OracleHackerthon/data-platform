@@ -52,7 +52,7 @@ Codex 가 대화를 시작할 때 사용자가 누구인지 확인하고, 이 �
 ## 예원 (화면·발표)
 - 수정할 수 있는 곳: `web/app/**/page.tsx`, `web/app/layout.tsx`, `web/app/globals.css`, `web/components/<기능>/`, `docs/DEMO_SCRIPT.md`
 - 참고할 코드: `docs/PLAN.md` B-0 (화면 경로, 역할 상태), `web/lib/types.ts` (API 응답 타입), `web/components/ui/` 의 부품 목록
-- 로컬 실행: web 만. `web/.env.local` 은 `AI_SERVICE_URL=http://localhost:8000` 한 줄이면 된다. DB·OpenAI 정보는 필요 없다 (MOCK 으로 개발).
+- 로컬 실행: web 만. `web/.env.local` 에 `DEV_API_PROXY=http://132.145.95.96` 한 줄을 넣고 `npm run dev`. 화면의 `/api/*` 가 배포본으로 가서 실제 데이터가 나온다 (10/17, DB·OpenAI 정보는 필요 없다). 배포본 DB 를 같이 쓰므로 확인 뒤 `curl -X POST http://132.145.95.96/api/demo/reset` 로 되돌린다.
 - 주의
   - 화면은 `/api/*` 만 부른다. 상대 API 가 없으면 기다리지 말고 담당자에게 `$mock` 을 요청한다. 화면 안에 가짜 데이터를 넣지 않는다 (DECISIONS D4).
   - **화면 구성·디자인·화면 경로는 예원이 정한다** (10/17). `ui-design`·`shadcn-ui` 스킬과 PLAN 의 "화면 구성" 은 참고용이다. 리뷰에서 디자인을 이유로 막지 않는다.
