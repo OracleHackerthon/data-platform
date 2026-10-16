@@ -55,8 +55,9 @@ Codex 가 대화를 시작할 때 사용자가 누구인지 확인하고, 이 �
 - 로컬 실행: web 만. `web/.env.local` 은 `AI_SERVICE_URL=http://localhost:8000` 한 줄이면 된다. DB·OpenAI 정보는 필요 없다 (MOCK 으로 개발).
 - 주의
   - 화면은 `/api/*` 만 부른다. 상대 API 가 없으면 기다리지 말고 담당자에게 `$mock` 을 요청한다. 화면 안에 가짜 데이터를 넣지 않는다 (DECISIONS D4).
-  - 화면 구성·색·상태 화면·발표용 마감 체크는 `ui-design` 스킬을 따른다. 시작 전에 PLAN A 의 "디자인 방향"(서비스명, 강조색)과 B 의 "화면 구성" 을 확인한다.
-  - UI 부품은 `web/components/ui/` 것을 먼저 쓴다. 없는 부품은 정민에게 요청한다. 부품 사용 규칙은 `shadcn-ui` 스킬(Base UI 버전)을 따른다.
+  - **화면 구성·디자인·화면 경로는 예원이 정한다** (10/17). `ui-design`·`shadcn-ui` 스킬과 PLAN 의 "화면 구성" 은 참고용이다. 리뷰에서 디자인을 이유로 막지 않는다.
+  - 대신 백엔드 파일은 고치지 않는다: `web/app/api/`, `web/lib/db.ts`, `web/db/`, `web/lib/{api,ai-client,types}.ts`, `web/package.json`, `ai/`, `deploy/`. 고쳐야 할 것 같으면 멈추고 정민에게 알린다.
+  - 없는 UI 부품이 필요하면 정민에게 요청한다 (`web/components/ui/` 와 패키지는 정민).
   - Next.js 사용법은 `web/AGENTS.md` 가 가리키는 설치된 버전의 공식 문서(`web/node_modules/next/dist/docs/`)를 따른다.
 - 자주 쓰는 말
   - "API_CONTRACT 의 요약 응답 형태로 요약 화면 만들어줘. 부품은 components/ui 걸 써."

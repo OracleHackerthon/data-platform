@@ -41,6 +41,7 @@ gh pr checkout <번호>
 - ai: `cd ai`, `python -c "import main"`
 - 연결 규칙: 화면 파일에서 `localhost:8000`·`ai:8000` 직접 호출, `ai/llm.py` 밖의 `openai` import, `web/lib/db.ts` 밖의 `oracledb` 사용
 - 계약: 바뀐 `/api/*` 경로와 요청·응답 필드를 `docs/API_CONTRACT.md` 와 한 줄씩 대조
+- 화면 PR: 디자인·화면 구성·색·크기·화면 경로는 지적하지 않는다 (예원 결정, AGENTS.md). 백엔드 경로(`web/app/api/`, `web/lib/db.ts`, `web/db/`, `web/lib/{api,ai-client,types}.ts`, `web/package.json`, `ai/`, `deploy/`)를 바꿨으면 [보통], 화면 안 가짜 데이터는 [보통]
 
 **MOCK**: 응답 필드 이름·타입·구조가 계약과 정확히 같은가, `MOCK` 주석이 있는가, DB·AI·외부 호출이 없는가, API 담당자 경로인가.
 
