@@ -18,11 +18,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col font-sans">
         <RoleProvider>
         <header className="border-b">
-          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
+          <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-8">
             <RoleToggle />
           </div>
         </header>
-        {children}
+        <div className="pt-8">{children}</div>
         <Toaster theme="light" />
         </RoleProvider>
       </body>

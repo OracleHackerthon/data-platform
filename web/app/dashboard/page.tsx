@@ -121,10 +121,12 @@ export default function DashboardPage() {
           <h2 className="text-lg font-semibold">개선 제안</h2>
           {data.valueIndex ? data.valueIndex.suggestions.length ? data.valueIndex.suggestions.map((suggestion) => <Card key={suggestion.element}><CardHeader><CardTitle>{suggestion.label}</CardTitle><CardDescription>기대 상승 +{suggestion.expectedGain.toLocaleString("ko-KR")}점</CardDescription></CardHeader><CardContent className="break-words">{suggestion.text}</CardContent></Card>) : <p className="text-sm text-muted-foreground">제안된 개선 사항이 없습니다.</p> : <p className="text-sm text-muted-foreground">진단 후 보완할 내용과 기대 상승 점수를 안내합니다.</p>}
         </div>
-        <div className="flex min-w-0 flex-col gap-4">
-          <h2 className="text-lg font-semibold">AI 진단 리포트</h2>
-          {data.report ? <><p className="line-clamp-3 break-words whitespace-pre-wrap">{data.report}</p><Dialog><DialogTrigger render={<Button variant="outline" />}>리포트 전체 보기</DialogTrigger><DialogContent><DialogHeader><DialogTitle>AI 진단 리포트</DialogTitle></DialogHeader><p className="max-h-96 overflow-y-auto break-words whitespace-pre-wrap">{data.report}</p></DialogContent></Dialog></> : <p className="text-sm text-muted-foreground">진단 후 데이터의 강점과 한계를 정리한 리포트가 표시됩니다.</p>}
-        </div>
+        <Card className="min-w-0 self-start">
+          <CardHeader><CardTitle><h2 className="text-lg font-semibold">AI 진단 리포트</h2></CardTitle><CardDescription>데이터의 강점과 한계를 한눈에 확인하세요.</CardDescription></CardHeader>
+          <CardContent className="flex flex-col items-start gap-4">
+            {data.report ? <><p className="line-clamp-3 break-words leading-relaxed whitespace-pre-wrap">{data.report}</p><Dialog><DialogTrigger render={<Button variant="outline" />}>리포트 전체 보기</DialogTrigger><DialogContent><DialogHeader><DialogTitle>AI 진단 리포트</DialogTitle></DialogHeader><p className="max-h-96 overflow-y-auto break-words leading-relaxed whitespace-pre-wrap">{data.report}</p></DialogContent></Dialog></> : <p className="text-sm text-muted-foreground">진단 후 데이터의 강점과 한계를 정리한 리포트가 표시됩니다.</p>}
+          </CardContent>
+        </Card>
       </section>
 
     </main>

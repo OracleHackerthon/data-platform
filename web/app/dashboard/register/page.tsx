@@ -63,7 +63,6 @@ export default function RegisterTaskPage() {
           <Badge variant="outline">{data.status === "published" ? "공개됨" : "등록 전"}</Badge>
         </CardContent>
       </Card>
-      {data.status === "published" && <Alert><AlertTitle>과제가 등록되었습니다</AlertTitle><AlertDescription>공개 정책에 따라 스타트업 카탈로그에 표시됩니다. 상단에서 스타트업으로 전환해 확인할 수 있습니다.</AlertDescription></Alert>}
       {actionError && <Alert variant="destructive"><AlertTitle>과제를 등록하지 못했습니다</AlertTitle><AlertDescription>선택한 정책은 유지됩니다. 다시 시도해 주세요.</AlertDescription><Button variant="outline" disabled={busy} onClick={save}>다시 시도</Button></Alert>}
         <Card>
           <CardHeader>
@@ -101,6 +100,7 @@ export default function RegisterTaskPage() {
             </form>
           </CardContent>
         </Card>
+      {data.status === "published" && <Alert><AlertTitle>과제가 등록되었습니다</AlertTitle><AlertDescription>공개 정책에 따라 스타트업 카탈로그에 표시됩니다. 상단에서 스타트업으로 전환해 확인할 수 있습니다.</AlertDescription></Alert>}
     </>}
   </main>;
 }

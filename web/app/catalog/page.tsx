@@ -25,9 +25,12 @@ export default function CatalogPage() {
       : <div className="grid min-w-0 gap-4 lg:grid-cols-2">{data.map((task) => <Card key={task.id}>
         <CardHeader><CardTitle>{task.title}</CardTitle><CardDescription className="break-words">{task.problem}</CardDescription></CardHeader>
         <CardContent className="flex min-w-0 flex-col gap-4">
-          <p className="tabular-nums">가치평가지수 <strong>{task.valueIndex.score.toLocaleString("ko-KR")}점</strong> · {task.rowCount.toLocaleString("ko-KR")}행</p>
-          <dl className="flex flex-col gap-2">{task.valueIndex.areas.map((area) => <div key={area.key} className="flex justify-between gap-2"><dt>{area.label}</dt><dd className="shrink-0 tabular-nums">{area.score === null ? "평가 제외" : `${area.score.toLocaleString("ko-KR")}점`}</dd></div>)}</dl>
-          <Link href={`/tasks/${task.id}`} className="text-sm font-medium underline underline-offset-4">과제와 합성 데이터 보기</Link>
+          <dl className="grid grid-cols-2 gap-4 rounded-lg bg-muted p-4">
+            <div className="flex min-w-0 flex-col gap-2"><dt className="text-sm text-muted-foreground">가치평가지수</dt><dd className="tabular-nums">{task.valueIndex.score.toLocaleString("ko-KR")}점</dd></div>
+            <div className="flex min-w-0 flex-col gap-2"><dt className="text-sm text-muted-foreground">데이터 규모</dt><dd className="tabular-nums">{task.rowCount.toLocaleString("ko-KR")}행</dd></div>
+          </dl>
+          <dl className="flex flex-col gap-4">{task.valueIndex.areas.map((area) => <div key={area.key} className="flex justify-between gap-2"><dt className="text-sm text-muted-foreground">{area.label}</dt><dd className="shrink-0 tabular-nums">{area.score === null ? "평가 제외" : `${area.score.toLocaleString("ko-KR")}점`}</dd></div>)}</dl>
+          <Button variant="outline" render={<Link href={`/tasks/${task.id}`} />}>과제와 합성 데이터 보기</Button>
         </CardContent>
       </Card>)}</div>}
   </main>;
