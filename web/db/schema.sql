@@ -1,0 +1,10 @@
+-- 테이블 정의 (담당: 영진). Oracle Autonomous Database 23ai, Oracle SQL 문법.
+-- 이 파일에 CREATE TABLE 을 적어 PR 로 올린다. DB 에 실제 실행은 정민이 한다 (docs/OCI_RUNBOOK.md 5-1).
+-- 바꿀 때는 기존 문장을 고치지 말고 ALTER TABLE 을 아래에 추가한다 (이미 실행된 문장을 다시 돌리지 않기 위해).
+--
+-- 예시 형식:
+-- CREATE TABLE items (
+--   id          NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+--   title       VARCHAR2(200) NOT NULL,
+--   created_at  TIMESTAMP DEFAULT SYSTIMESTAMP NOT NULL
+-- );

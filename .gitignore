@@ -1,0 +1,33 @@
+# 비밀값
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+wallet*/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# 데이터
+research/data/raw/
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+next-env.d.ts
+
+# 디자인 점검용 임시 페이지 (docs/design-library 의 break, state-machine). PR 에 넣지 않는다
+web/app/dev-preview/

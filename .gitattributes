@@ -1,0 +1,6 @@
+# Windows에서 편집해도 리눅스 VM에서 실행되도록 줄바꿈을 LF로 고정
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.png binary
+*.jpg binary
+*.ico binary

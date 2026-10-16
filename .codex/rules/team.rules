@@ -1,0 +1,127 @@
+# 팀 공용 Codex 실행 규칙. 이 폴더(.codex)를 신뢰(trust)해야 적용된다.
+# 여러 규칙이 겹치면 가장 엄격한 결정이 적용된다.
+# 검사: codex execpolicy check --pretty --rules .codex/rules/team.rules -- <명령>
+
+# ---- 금지: 남의 작업이나 기록을 지울 수 있는 명령 ----
+prefix_rule(
+    pattern = ["git", "push", ["--force", "-f", "--force-with-lease"]],
+    decision = "forbidden",
+    justification = "강제 push는 다른 사람의 작업을 지울 수 있다. 정민에게 요청할 것.",
+    match = ["git push --force origin feat/x", "git push -f"],
+    not_match = ["git push -u origin feat/x"],
+)
+# 옵션이 브랜치보다 앞에 오는 형태도 막는다.
+# 한계: 브랜치 뒤에 옵션이 붙는 형태(git push -u origin feat/a --force)는 규칙으로 못 막는다.
+# 그래서 main 은 GitHub Ruleset 이 막고, submit 스킬에 "옵션 없이 push" 를 명시했다.
+prefix_rule(
+    pattern = ["git", "push", ["-u", "--set-upstream"], "origin", ["--force", "-f", "--force-with-lease", "--delete", "-d"]],
+    decision = "forbidden",
+    justification = "강제 push·원격 브랜치 삭제는 정민에게 요청할 것.",
+    match = ["git push -u origin --force feat/x"],
+    not_match = ["git push -u origin feat/x"],
+)
+prefix_rule(
+    pattern = ["git", "push", "origin", ["--force", "-f", "--force-with-lease", "--delete", "-d"]],
+    decision = "forbidden",
+    justification = "강제 push·원격 브랜치 삭제는 정민에게 요청할 것.",
+    match = ["git push origin --force feat/x", "git push origin -f feat/x"],
+    not_match = ["git push -u origin feat/x"],
+)
+prefix_rule(
+    pattern = ["git", "reset", "--hard"],
+    decision = "forbidden",
+    justification = "작업 내용을 되돌릴 수 없게 지운다. 정민에게 요청할 것.",
+    match = ["git reset --hard origin/main"],
+)
+prefix_rule(
+    pattern = ["git", "clean"],
+    decision = "forbidden",
+    justification = "추적하지 않는 파일을 지운다. 정민에게 요청할 것.",
+    match = ["git clean -fd"],
+)
+prefix_rule(
+    pattern = ["git", "branch", ["-D", "--delete"]],
+    decision = "forbidden",
+    justification = "브랜치 삭제는 머지 후 GitHub에서 자동으로 한다.",
+    match = ["git branch -D feat/x"],
+)
+prefix_rule(
+    pattern = ["git", "push", "origin", "main"],
+    decision = "forbidden",
+    justification = "main 에는 PR로만 반영한다.",
+    match = ["git push origin main"],
+)
+prefix_rule(
+    pattern = ["git", "rebase"],
+    decision = "forbidden",
+    justification = "히스토리를 바꾼다. 최신화는 sync 스킬(git merge)로 한다.",
+    match = ["git rebase main"],
+)
+# ---- 삭제: 금지하지 않고 "매번 묻기" ----
+# Codex 가 테스트 폴더 등을 스스로 지울 수 있어야 해서 forbidden 이 아니라 prompt 로 둔다.
+# prompt 는 개인 설정에 저장된 "항상 허용"(allow)보다 엄격하므로, 항상 허용을 눌렀어도 매번 다시 묻는다.
+# 승인 화면에서 경로를 읽고, 내 담당 폴더 안의 하위 폴더일 때만 "예(한 번)". 저장소 폴더 자체나 저장소 밖이면 거절.
+# (10/15 리허설: Windows 에서 Remove-Item -Recurse 로 저장소 전체가 지워진 사고 이후 추가)
+prefix_rule(
+    pattern = [["Remove-Item", "remove-item", "ri", "rm", "del", "erase", "rd", "rmdir", "Remove-ItemProperty"]],
+    decision = "prompt",
+    justification = "파일·폴더 삭제. 경로가 내 담당 폴더 안인지 확인하고 한 번만 승인할 것. 저장소 폴더 자체나 저장소 밖이면 거절.",
+    match = [
+        "Remove-Item -LiteralPath C:/x/telos-hackerthon -Recurse -Force",
+        "remove-item web/app/test -Recurse",
+        "rm -rf web/app/test",
+        "rmdir /s /q web",
+        "del web/app/test.tsx",
+    ],
+    not_match = ["git rm --cached x", "npm run build"],
+)
+prefix_rule(
+    pattern = ["cmd", ["/c", "/C"], ["rd", "rmdir", "del", "erase"]],
+    decision = "prompt",
+    justification = "파일·폴더 삭제. 경로를 확인하고 한 번만 승인할 것.",
+    match = ["cmd /c rmdir /s /q web"],
+)
+prefix_rule(
+    pattern = ["gh", "pr", "merge"],
+    decision = "forbidden",
+    justification = "머지는 정민이 한다.",
+    match = ["gh pr merge 3 --squash"],
+)
+prefix_rule(
+    pattern = [["npm", "pip"], ["install", "i", "add", "uninstall"]],
+    decision = "prompt",
+    justification = "패키지 변경은 정민 승인 후. 승인 전에 정민에게 확인할 것.",
+    match = ["npm install zod", "pip install pandas"],
+)
+prefix_rule(
+    pattern = [["ssh", "scp", "oci"]],
+    decision = "forbidden",
+    justification = "서버와 OCI 작업은 정민만 한다.",
+    match = ["ssh opc@1.2.3.4"],
+)
+
+# ---- 허용: 매번 묻지 않아도 되는 일상 명령 (네트워크 필요) ----
+prefix_rule(
+    pattern = ["git", "push", "-u", "origin"],
+    decision = "allow",
+    justification = "내 브랜치 push",
+    match = ["git push -u origin feat/x"],
+)
+prefix_rule(
+    pattern = ["git", "fetch"],
+    decision = "allow",
+    justification = "최신 상태 받기",
+    match = ["git fetch origin"],
+)
+prefix_rule(
+    pattern = ["git", "pull"],
+    decision = "allow",
+    justification = "최신 상태 받기",
+    match = ["git pull --ff-only"],
+)
+prefix_rule(
+    pattern = ["gh", "pr", ["create", "view", "checks", "list", "edit"]],
+    decision = "allow",
+    justification = "PR 생성과 확인",
+    match = ["gh pr create --fill", "gh pr checks 3"],
+)

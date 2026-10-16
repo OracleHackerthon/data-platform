@@ -1,0 +1,5 @@
+jupyterlab
+pandas
+matplotlib
+openai==3.30.0
+python-dotenv

@@ -1,0 +1,6 @@
+# SITE_ADDRESS 가 ":80" 이면 HTTP만, 도메인이면 HTTPS 인증서를 자동 발급한다.
+# 도메인이 없으면 공인 IP로 만든 주소를 쓸 수 있다: 예) 161-33-14-224.sslip.io
+{$SITE_ADDRESS::80} {
+	encode gzip
+	reverse_proxy web:3000
+}
