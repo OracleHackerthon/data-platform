@@ -8,7 +8,7 @@ description: main 의 최신 변경을 내 작업에 반영할 때 사용한다.
 0. **이미 머지된 브랜치인지 먼저 본다.** 현재 브랜치가 main 이 아니면 `gh pr list --head <현재 브랜치> --state merged --json number,headRefOid` 를 실행한다. 결과가 비어 있으면 1로 간다.
    - 머지된 PR 이 있으면 merge 하지 않는다. Squash 머지라 main 에 같은 내용이 다른 커밋으로 들어가 있어, merge 하면 그 PR 이 고친 파일마다 충돌이 난다 (10/16 승연 `feat/diagnose`).
    - `git fetch origin pull/<번호>/head` 를 한 뒤 `git merge-base --is-ancestor HEAD <headRefOid>` 를 실행한다. 이 명령이 성공(종료 코드 0)하면 내 커밋이 모두 머지된 PR 에 들어 있다는 뜻이다 (다른 사람이 PR 에 커밋을 얹었으면 내 HEAD 가 `headRefOid` 보다 뒤일 수 있다).
-   - 위 명령이 실패해도 `git log --oneline --no-merges <headRefOid>..HEAD` 결과가 비어 있으면 같은 것으로 본다. PR 머지 뒤에 sync 가 만든 병합 커밋(`Merge remote-tracking branch 'origin/main'`)만 있다는 뜻이다. sync 는 충돌이 나면 병합을 취소하므로 이 병합 커밋에는 새 작업이 없다 (10/17 예원 `feat/dashboard`).
+   - 위 명령이 실패해도 `git log --oneline --no-merges HEAD ^origin/main ^<headRefOid>` 결과가 비어 있으면 같은 것으로 본다 (main 에 이미 있는 커밋과 머지된 PR 의 커밋을 빼고 남는 내 커밋이 없다). PR 머지 뒤에 sync 가 만든 병합 커밋(`Merge remote-tracking branch 'origin/main'`)만 있다는 뜻이다. sync 는 충돌이 나면 병합을 취소하므로 이 병합 커밋에는 새 작업이 없다 (10/17 예원 `feat/dashboard`).
    - `git status --porcelain` 이 비어 있고 위 둘 중 하나가 성공하면 (머지 뒤 새 작업 없음): `git switch main` → `git pull --ff-only` 로 끝내고, "이 브랜치는 #<번호> 로 이미 머지됐습니다. 다음 작업은 `start` 로 새 브랜치를 만들어 주세요" 라고 알린다.
    - 그 밖의 경우 (커밋 안 된 변경이 있거나, 머지 뒤 커밋이 더 있음): 아무것도 하지 않고 `git log --oneline origin/main..HEAD` 결과를 보여 주며 "머지된 브랜치에 새 작업이 있습니다. 정민을 불러 주세요." 라고 말한 뒤 멈춘다.
 1. `git status` 로 커밋 안 된 변경이 있는지 본다. 있으면 사용자 담당 경로만 `git add` 해서 `git commit -m "wip: 진행 중 저장"` 한다.
