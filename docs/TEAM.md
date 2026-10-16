@@ -49,15 +49,17 @@ Codex 가 대화를 시작할 때 사용자가 누구인지 확인하고, 이 �
 
 ---
 
-## 예원 (화면·발표)
-- 수정할 수 있는 곳: `web/app/**/page.tsx`, `web/app/layout.tsx`, `web/app/globals.css`, `web/components/<기능>/`, `docs/DEMO_SCRIPT.md`
+## 예원 (전권: 화면·백엔드·계약·발표)
+- 수정할 수 있는 곳: `web/app/**/page.tsx`, `web/app/layout.tsx`, `web/app/globals.css`, `web/components/<기능>/`, `docs/DEMO_SCRIPT.md`, 그리고 10/17 부터 `web/` 전체, `ai/` 전체, `research/`, `docs/PLAN.md`, `docs/API_CONTRACT.md` (전권, DECISIONS D17)
 - 참고할 코드: `docs/PLAN.md` B-0 (화면 경로, 역할 상태), `web/lib/types.ts` (API 응답 타입), `web/components/ui/` 의 부품 목록
 - 로컬 실행: web 만. `web/.env.local` 에 `DEV_API_PROXY=http://132.145.95.96` 한 줄을 넣고 `npm run dev`. 화면의 `/api/*` 가 배포본으로 가서 실제 데이터가 나온다 (10/17, DB·OpenAI 정보는 필요 없다). 배포본 DB 를 같이 쓰므로 확인 뒤 `curl -X POST http://132.145.95.96/api/demo/reset` 로 되돌린다.
 - 주의
   - 화면은 `/api/*` 만 부른다. 상대 API 가 없으면 기다리지 말고 담당자에게 `$mock` 을 요청한다. 화면 안에 가짜 데이터를 넣지 않는다 (DECISIONS D4).
   - **화면 구성·디자인·화면 경로는 예원이 정한다** (10/17). `ui-design`·`shadcn-ui` 스킬과 PLAN 의 "화면 구성" 은 참고용이다. 리뷰에서 디자인을 이유로 막지 않는다.
-  - 대신 백엔드 파일은 고치지 않는다: `web/app/api/`, `web/lib/db.ts`, `web/db/`, `web/lib/{api,ai-client,types}.ts`, `web/package.json`, `ai/`, `deploy/`. 고쳐야 할 것 같으면 멈추고 정민에게 알린다.
-  - 없는 UI 부품이 필요하면 정민에게 요청한다 (`web/components/ui/` 와 패키지는 정민).
+  - **예원이 전권을 갖는다** (10/17). 기능 범위, 화면, API 계약, 패키지 추가·`npx shadcn` 을 예원이 정한다. 이 절과 "공통" 절의 "정민에게 확인", "패키지 설치는 거절" 은 예원에게는 적용하지 않는다.
+  - 백엔드를 고치기 전에 영진(API·DB)·승연(ai)에게 "이 파일 고칠게요" 라고 알린다 (같은 파일 동시 수정은 충돌). 계약을 바꾸면 같은 PR 에서 `docs/API_CONTRACT.md` 와 `web/lib/types.ts` 를 함께 고친다.
+  - 연결 규칙(DB 는 `web/lib/db.ts`, AI 는 `callAi`, OpenAI 는 `ai/llm.py`), Oracle SQL, 비밀값 금지는 그대로다.
+  - 정민에게 요청할 것: `deploy/`, `.github/`, 에이전트 설정 파일, 머지·배포·서버, 충돌 해결.
   - Next.js 사용법은 `web/AGENTS.md` 가 가리키는 설치된 버전의 공식 문서(`web/node_modules/next/dist/docs/`)를 따른다.
 - 자주 쓰는 말
   - "API_CONTRACT 의 요약 응답 형태로 요약 화면 만들어줘. 부품은 components/ui 걸 써."
