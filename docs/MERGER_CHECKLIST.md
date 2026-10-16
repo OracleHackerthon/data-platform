@@ -50,7 +50,7 @@
 | 패키지 | `package.json`, `package-lock.json`, `requirements.txt` 변경 | 의도한 것인지 확인. lock 파일이 같이 바뀌었는가. 버전 고정(`==`)인가 |
 | 크기 | 바뀐 파일이 20개 넘거나 기능 2개 이상 섞임 | 나눠 달라고 요청 (시간 없으면 그대로 받되 동작 확인을 더 꼼꼼히) |
 | 디버그 흔적 | `console.log`, `print`, 주석 처리된 큰 코드 | 가벼우면 머지 후 정민이 정리 |
-| 화면 PR (10/17) | 디자인·화면 구성·색·크기·화면 경로는 **보지 않는다** (예원 결정). 대신 백엔드 경로(`web/app/api/`, `web/lib/db.ts`, `web/db/`, `web/lib/{api,ai-client,types}.ts`, `web/package.json`, `ai/`, `deploy/`)가 바뀌었는지, 화면이 `/api/*` 만 부르는지, 화면 안에 가짜 데이터가 없는지 본다. **예원 PR 은 소유권·계약 변경·패키지 추가로 막지 않는다** (D17 전권. `deploy/`·`.github/`·에이전트 설정 변경만 빼달라고 요청. 비밀값·연결 규칙·계약 문서와 `types.ts` 일치는 그대로 본다) | 백엔드 변경은 빼달라고 요청 (보통) |
+| 화면 PR (10/17) | 디자인·화면 구성·색·크기·화면 경로는 **보지 않는다** (예원 결정). 대신 백엔드 경로(`web/app/api/`, `web/lib/db.ts`, `web/db/`, `web/lib/{api,ai-client,types}.ts`, `web/package.json`, `ai/`, `deploy/`)가 바뀌었는지, 화면이 `/api/*` 만 부르는지, 화면 안에 가짜 데이터가 없는지 본다. **예원 PR 은 소유권·계약 변경·패키지 추가로 막지 않는다** (D17 전권. `deploy/`·`.github/`·에이전트 설정 변경만 빼달라고 요청. 삭제(파일, API 경로·필드, 함수·컴포넌트, 패키지, DB `DROP`·`DELETE`)는 정민이 승인한 것인지 확인. 비밀값·연결 규칙·계약 문서와 `types.ts` 일치는 그대로 본다) | 백엔드 변경은 빼달라고 요청 (보통) |
 
 ### 1-4. review-pr 스킬로 리뷰 (정민 PC, 저장소 루트)
 - Claude Code: `/review-pr <번호>` / Codex(영진 백업): `$review-pr <번호>`
