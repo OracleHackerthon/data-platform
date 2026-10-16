@@ -85,7 +85,7 @@
 ```
 - `score`: 지수 (정수). `areas[].score`, `elements[].score`: 10점 척도 (소수 1자리). 평가할 지표가 없으면 `null` (화면은 "평가 제외")
 - `weight`: 논문 가중치. `adjustedWeight`: 빠진 요소를 제외하고 100으로 다시 맞춘 가중치 (지수 계산에 쓰는 값)
-- `source`: `"sql" | "llm" | "meta"`. `suggestions` 는 점수가 낮은 요소부터 최대 3개. `expectedGain` 은 그 요소가 10점이 될 때 오르는 지수 (정수)
+- `source`: `"sql" | "llm" | "meta"`. `suggestions` 는 `expectedGain` 이 큰 요소부터 최대 3개 (같으면 점수가 낮은 요소 먼저, 10점인 요소는 빼고). `expectedGain` 은 그 요소가 10점이 될 때 오르는 지수 (정수)
 - `elements` 와 `suggestions` 는 공장에게만 준다. 카탈로그·스타트업에게는 `score`, `min`, `max`, `areas` 만 준다.
 
 ### B-1. 진단 — web → ai `POST /diagnose` (담당: 승연)
