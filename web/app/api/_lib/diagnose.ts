@@ -4,7 +4,7 @@ import type { AiDiagnoseRequest, AiDiagnoseResult, DiagnoseResult, Metrics } fro
 import { ApiError } from "./api-error";
 import { dbBoolean, dbDateOnly } from "./db-values";
 import { sensorColumns } from "./tasks";
-import { isRecord, isValueIndex } from "./value-index";
+import { isRecord, isValueIndex, normalizeExcludedWeights } from "./value-index";
 
 type DatasetRow = {
   ID: number; CREATED_ON: Date; SUPPLY_CYCLE: string; DELIVERY_METHOD: string;
@@ -41,13 +41,17 @@ function checkedAiResult(value: unknown): AiDiagnoseResult {
   const bad = () => new ApiError(502, "AI 진단 응답 형식이 올바르지 않습니다");
   if (!isRecord(value) || value.ok !== true || !isRecord(value.data)) throw bad();
   const data = value.data;
-  if (!isValueIndex(data.valueIndex) || typeof data.report !== "string" || !data.report.trim() || !isRecord(data.taskCard)) throw bad();
+  const index = normalizeExcludedWeights(data.valueIndex);
+  if (!isValueIndex(index) || typeof data.report !== "string" || !data.report.trim() || !isRecord(data.taskCard)) throw bad();
   const card = data.taskCard;
   for (const [key, limit] of [["title", 200], ["problem", 2000], ["metric", 200], ["dataNeeded", 2000]] as const) {
     const text = card[key];
     if (typeof text !== "string" || !text.trim() || [...text].length > limit) throw bad();
   }
-  return data as unknown as AiDiagnoseResult;
+  return { valueIndex: index, report: data.report, taskCard: {
+    title: card.title as string, problem: card.problem as string,
+    metric: card.metric as string, dataNeeded: card.dataNeeded as string,
+  } };
 }
 
 export async function diagnose(datasetId: number): Promise<DiagnoseResult> {

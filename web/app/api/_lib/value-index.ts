@@ -21,8 +21,17 @@ export function isValueIndex(v: unknown): v is ValueIndex {
     && v.suggestions.every((s: unknown) => isRecord(s) && text(s.element) && text(s.label) && text(s.text) && number(s.expectedGain, 0) && Number.isInteger(s.expectedGain));
 }
 
+// AI는 평가 제외 요소의 가중치를 null로 반환한다. 화면 계약(number)에 맞춰
+// 기여도가 없는 요소만 0으로 표기하며, 실제 점수·활성 요소의 가중치는 유지한다.
+export function normalizeExcludedWeights(value: unknown): unknown {
+  if (!isRecord(value) || !Array.isArray(value.elements)) return value;
+  return { ...value, elements: value.elements.map((element: unknown) =>
+    isRecord(element) && element.score === null && element.adjustedWeight === null
+      ? { ...element, adjustedWeight: 0 } : element) };
+}
+
 export function storedValueIndex(value: unknown): ValueIndex {
-  const parsed = parseDbJson(value);
+  const parsed = normalizeExcludedWeights(parseDbJson(value));
   if (!isValueIndex(parsed)) throw new ApiError(500, "저장된 가치평가지수 형식이 올바르지 않습니다");
   return parsed;
 }
