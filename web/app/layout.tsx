@@ -17,7 +17,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col font-sans">
         <header className="border-b">
           <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4">
-            <Link href="/dashboard" className="font-semibold focus-visible:outline-2 focus-visible:outline-ring">제조 데이터 검증·거래</Link>
+            <Link href="/" className="font-semibold focus-visible:outline-2 focus-visible:outline-ring">제조 데이터 검증·거래</Link>
             <div className="flex items-center gap-4">
               <Link href="/dashboard" className="text-sm underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-ring">대시보드</Link>
               <Badge variant="secondary">현재 역할: 공장</Badge>
