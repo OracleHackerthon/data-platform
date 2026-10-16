@@ -30,14 +30,6 @@
 
 ## 확정된 계약
 
-### 샘플: ai-example — 상태: 확정 (연결 확인용, 당일 삭제)
-- 화면 → web: `POST /api/ai-example`
-  - 요청: `{ "text": "문장" }`
-  - 응답 data: `{ "answer": "요약" }`
-- web → ai: `POST /example`
-  - 요청: `{ "text": "문장" }`
-  - 응답 data: `{ "answer": "요약" }`
-
 ### health — 상태: 확정
 - `GET /api/health` → data: `{ "web": "up", "ai": "up" | "down" }`
 - `GET /api/db-check` → data: `{ "result": 1 }`
@@ -217,3 +209,4 @@
 - 10/16 B-1~B-6 계약 초안 추가 (정민 확인 전)
 - 10/16 데이터셋 SECOM 으로 변경, 품질 점수(`qualityScore`)를 가치평가지수(`valueIndex`)로 교체, 계약에 `price`·`priceGuide` 추가 (초안)
 - 10/16 21시 B-1~B-6 계약 확정 (정민). 이후 변경은 이 이력에 남기고 `web/lib/types.ts` 를 같은 PR 에서 고친다
+- 10/16 21시 샘플 `ai-example` 제거 (VM 배포본에서 OpenAI 연결 확인 후, DECISIONS D7)
