@@ -226,7 +226,7 @@ def _cycle_score(value: Any) -> float | None:
     cycle = str(value).strip().lower()
     if not cycle:
         return None
-    if any(token in cycle for token in ("1회성", "불규칙", "주기없음", "주기 없음")):
+    if any(token in cycle for token in ("1회성", "불규칙", "비정기", "주기없음", "주기 없음")):
         return 3.0
     if "분기" in cycle:
         return 6.0
@@ -463,14 +463,20 @@ def calculate_value_index(
 
     suggestions: list[dict[str, Any]] = []
     texts = improvement_texts or {}
-    candidates = [element for element in ELEMENTS if scores[element["key"]] is not None]
-    candidates.sort(key=lambda element: (scores[element["key"]], element["weight"]))
+    gains = {
+        element["key"]: round((MAX_SCORE - scores[element["key"]]) * adjusted_weights[element["key"]])
+        for element in ELEMENTS
+        if scores[element["key"]] is not None and scores[element["key"]] < MAX_SCORE
+    }
+    # Contract: largest expectedGain first, ties broken by the lower score.
+    candidates = [element for element in ELEMENTS if element["key"] in gains]
+    candidates.sort(key=lambda element: (-gains[element["key"]], scores[element["key"]]))
     for element in candidates:
         text = texts.get(element["key"])
         if not text:
             continue
         key = element["key"]
-        gain = round((MAX_SCORE - scores[key]) * adjusted_weights[key])
+        gain = gains[key]
         suggestions.append(
             {
                 "element": key,

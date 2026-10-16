@@ -38,9 +38,18 @@ class ValueIndexScoringTests(unittest.TestCase):
             "categoryValueClarity": 0,
         }
         improvement_texts = {
-            "physical_quality": "결측 센서를 다시 수집하세요.",
-            "row_sufficiency": "결측 센서를 다시 수집해 유효 행 수를 늘리세요.",
-            "timeliness": "정기적인 데이터 제공 주기를 마련하세요.",
+            key: "개선 제안"
+            for key in (
+                "diversity",
+                "linkage",
+                "clarity",
+                "timeliness",
+                "physical_quality",
+                "row_sufficiency",
+                "provider_reliability",
+                "delivery_convenience",
+                "format_openness",
+            )
         }
 
         result = calculate_value_index(metrics, meta, llm_assessment, improvement_texts)
@@ -63,8 +72,8 @@ class ValueIndexScoringTests(unittest.TestCase):
         self.assertIsNone(elements["substitutability"]["score"])
 
         self.assertEqual(
-            {item["element"]: item["expectedGain"] for item in result["suggestions"]},
-            {"row_sufficiency": 82, "timeliness": 64, "physical_quality": 104},
+            [(item["element"], item["expectedGain"]) for item in result["suggestions"]],
+            [("physical_quality", 104), ("row_sufficiency", 82), ("timeliness", 64)],
         )
         self.assertAlmostEqual(
             sum(element["adjustedWeight"] or 0 for element in result["elements"]), 100.0, places=1
@@ -94,6 +103,7 @@ class ValueIndexScoringTests(unittest.TestCase):
         self.assertEqual(_cycle_score("일 1회"), 9.0)
         self.assertEqual(_cycle_score("분기 1회"), 6.0)
         self.assertEqual(_cycle_score("주기없음 (웨이퍼 단위 발생)"), 3.0)
+        self.assertEqual(_cycle_score("비정기 (1회 제공)"), 3.0)
 
     def test_same_input_is_deterministic(self):
         args = (
