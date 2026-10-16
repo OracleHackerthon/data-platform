@@ -10,44 +10,34 @@ import { ValueChart } from "@/components/dashboard/value-chart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import type { DiagnoseResult, PolicyResult, TaskDetailFactory } from "@/lib/types";
+import type { DiagnoseResult, TaskDetailFactory } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const metrics = ["결측률", "데이터 행 수", "수집 기간", "불량 비율", "이상값 비율"];
 export default function DashboardPage() {
   const { role, ready } = useRole();
   const router = useRouter();
   const { data, loading, error, reload, update } = useApi<TaskDetailFactory>(ready && role === "factory" ? "/api/tasks/1?role=factory" : null);
-  const [busy, setBusy] = useState<"diagnose" | "policy" | null>(null);
+  const [busy, setBusy] = useState(false);
   const busyRef = useRef(false);
-  const [actionError, setActionError] = useState<"diagnose" | "policy" | null>(null);
-  const [industry, setIndustry] = useState<string | undefined>();
+  const [actionError, setActionError] = useState(false);
   useEffect(() => { if (ready && role === "startup") router.replace("/catalog"); }, [ready, role, router]);
 
-  async function run(action: "diagnose" | "policy") {
+  async function run() {
     if (!data || busyRef.current) return;
     busyRef.current = true;
-    setBusy(action);
-    setActionError(null);
+    setBusy(true);
+    setActionError(false);
     try {
-      if (action === "diagnose") {
-        const result = await requestApi<DiagnoseResult>("/api/datasets/1/diagnose", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role: "factory" }) });
-        update({ ...data, ...result.taskCard, datasetId: result.datasetId, metrics: result.metrics, valueIndex: result.valueIndex, report: result.report });
-        toast.success("데이터 진단이 완료되었습니다");
-      } else {
-        const selected = industry ?? data.blockIndustry ?? "none";
-        const result = await requestApi<PolicyResult>("/api/tasks/1/policy", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role: "factory", synthLevel: "medium", blockIndustry: selected === "none" ? null : selected }) });
-        update({ ...data, status: result.status, synthLevel: result.synthLevel, blockIndustry: result.blockIndustry });
-        toast.success("공개 정책을 저장하고 과제를 공개했습니다");
-      }
-    } catch { setActionError(action); }
-    finally { busyRef.current = false; setBusy(null); }
+      const result = await requestApi<DiagnoseResult>("/api/datasets/1/diagnose", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role: "factory" }) });
+      update({ ...data, ...result.taskCard, datasetId: result.datasetId, metrics: result.metrics, valueIndex: result.valueIndex, report: result.report });
+      toast.success("데이터 진단이 완료되었습니다");
+    } catch { setActionError(true); }
+    finally { busyRef.current = false; setBusy(false); }
   }
   if (!ready || role !== "factory" || loading) return <main className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-8" aria-busy="true"><p role="status">데이터를 불러오고 있습니다…</p><Skeleton className="h-32 w-full" /><Skeleton className="h-64 w-full" /></main>;
   if (error || !data) return <main className="mx-auto w-full max-w-6xl px-6 py-8"><Alert variant="destructive"><AlertTitle>데이터를 불러오지 못했습니다</AlertTitle><AlertDescription>잠시 후 다시 시도해 주세요.</AlertDescription></Alert><Button variant="outline" onClick={reload} className="mt-4">다시 시도</Button></main>;
@@ -86,10 +76,10 @@ export default function DashboardPage() {
             <h2 id="diagnosis-title" className="text-lg font-semibold">데이터 가치와 품질</h2>
             <p id="diagnosis-help" className="text-sm text-muted-foreground">진단하면 가치평가지수와 개선 제안을 확인할 수 있습니다.</p>
           </div>
-          <Button disabled={busy !== null} aria-describedby="diagnosis-help" onClick={() => run("diagnose")}>{busy === "diagnose" && <Spinner data-icon="inline-start" />}{busy === "diagnose" ? "진단 중…" : data.valueIndex ? "다시 진단" : "진단하기"}</Button>
+          <Button disabled={busy} aria-describedby="diagnosis-help" onClick={run}>{busy && <Spinner data-icon="inline-start" />}{busy ? "진단 중…" : data.valueIndex ? "다시 진단" : "진단하기"}</Button>
         </div>
-        {actionError && <Alert variant="destructive"><AlertTitle>{actionError === "diagnose" ? "진단을 완료하지 못했습니다" : "공개 정책을 저장하지 못했습니다"}</AlertTitle><AlertDescription>잠시 후 다시 시도해 주세요.</AlertDescription><Button variant="outline" disabled={busy !== null} onClick={() => run(actionError)}>다시 시도</Button></Alert>}
-        {busy === "diagnose" ? <div role="status" aria-busy="true" className="flex flex-col gap-4"><p>데이터를 진단하고 있습니다. 잠시 기다려 주세요.</p><Skeleton className="h-64 w-full" /><Skeleton className="h-32 w-full" /></div> : <>
+        {actionError && <Alert variant="destructive"><AlertTitle>진단을 완료하지 못했습니다</AlertTitle><AlertDescription>잠시 후 다시 시도해 주세요.</AlertDescription><Button variant="outline" disabled={busy} onClick={run}>다시 시도</Button></Alert>}
+        {busy ? <div role="status" aria-busy="true" className="flex flex-col gap-4"><p>데이터를 진단하고 있습니다. 잠시 기다려 주세요.</p><Skeleton className="h-64 w-full" /><Skeleton className="h-32 w-full" /></div> : <>
         <div className="grid min-w-0 gap-4 lg:grid-cols-2">
           <Card>
             <CardHeader>
@@ -137,54 +127,6 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="grid min-w-0 gap-4 lg:grid-cols-2" aria-label="과제와 공개 정책">
-        <Card>
-          <CardHeader>
-            <CardTitle>공개할 과제</CardTitle>
-            <CardDescription>진단 결과를 바탕으로 업체에게 보여 줄 과제가 작성됩니다.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {data.title ? <dl className="flex flex-col gap-4 break-words"><div><dt className="text-sm text-muted-foreground">과제명</dt><dd>{data.title}</dd></div><div><dt className="text-sm text-muted-foreground">해결할 문제</dt><dd>{data.problem}</dd></div><div><dt className="text-sm text-muted-foreground">평가 지표</dt><dd>{data.metric}</dd></div><div><dt className="text-sm text-muted-foreground">필요한 데이터</dt><dd>{data.dataNeeded}</dd></div></dl> : <Empty>
-              <EmptyHeader>
-                <EmptyTitle>진단 후 과제가 준비됩니다</EmptyTitle>
-                <EmptyDescription>해결할 문제, 평가 지표, 필요한 데이터를 확인한 뒤 공개하세요.</EmptyDescription>
-              </EmptyHeader>
-            </Empty>}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>공개 정책</CardTitle>
-            <CardDescription>과제를 공개하기 전에 합성 데이터 수준과 차단 업종을 정하세요.</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <Field>
-              <FieldLabel htmlFor="synth-level">합성 데이터 수준</FieldLabel>
-              <Select value="medium" disabled={busy !== null} items={{ low: "낮음 (준비 중)", medium: "중간", high: "높음 (준비 중)" }}>
-                <SelectTrigger id="synth-level" className="w-full"><SelectValue /></SelectTrigger>
-                <SelectContent><SelectGroup>
-                  <SelectItem value="low" disabled>낮음 (준비 중)</SelectItem>
-                  <SelectItem value="medium">중간</SelectItem>
-                  <SelectItem value="high" disabled>높음 (준비 중)</SelectItem>
-                </SelectGroup></SelectContent>
-              </Select>
-              <FieldDescription>현재 중간 수준의 합성 데이터를 제공합니다.</FieldDescription>
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="block-industry">경쟁 업종 차단</FieldLabel>
-              <Select value={industry ?? data.blockIndustry ?? "none"} disabled={busy !== null} onValueChange={(value) => { if (value !== null) setIndustry(value); }} items={{ "반도체 제조": "반도체 제조", none: "차단하지 않음" }}>
-                <SelectTrigger id="block-industry" className="w-full"><SelectValue /></SelectTrigger>
-                <SelectContent><SelectGroup>
-                  <SelectItem value="반도체 제조">반도체 제조</SelectItem>
-                  <SelectItem value="none">차단하지 않음</SelectItem>
-                </SelectGroup></SelectContent>
-              </Select>
-            </Field>
-            <p id="publish-help" className="text-sm text-muted-foreground">{data.title ? "저장하면 차단 업종을 제외한 업체가 과제를 볼 수 있습니다." : "진단을 완료한 뒤 과제를 공개할 수 있습니다."}</p>
-            <Button disabled={!data.title || busy !== null} aria-describedby="publish-help" onClick={() => run("policy")}>{busy === "policy" && <Spinner data-icon="inline-start" />}{busy === "policy" ? "저장 중…" : data.status === "published" ? "공개 정책 저장" : "과제 공개"}</Button>
-          </CardContent>
-        </Card>
-      </section>
     </main>
   );
 }

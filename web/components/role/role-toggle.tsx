@@ -20,7 +20,7 @@ function RoleControls() {
   const router = useRouter();
   const path = usePathname();
   const links = role === "factory"
-    ? [["/dashboard", "대시보드"], ["/tasks/1/leaderboard", "순위표"], ["/deals", "거래"], ["/access-log", "접근 기록"]]
+    ? [["/dashboard", "대시보드"], ["/dashboard/register", "과제 등록"], ["/tasks/1/leaderboard", "순위표"], ["/deals", "거래"], ["/access-log", "접근 기록"]]
     : [["/catalog", "카탈로그"], ["/deals", "거래"]];
   function changeRole(next: Role) {
     setRole(next);
