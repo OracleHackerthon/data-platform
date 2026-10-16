@@ -16,7 +16,7 @@
 | `web/app/` 의 화면(`page.tsx`), `web/app/layout.tsx`, `web/app/globals.css`, `web/components/<기능>/` | 예원 |
 | `web/app/api/`, `web/lib/db.ts`, `web/db/` | 영진 |
 | `ai/`, `research/` | 승연 |
-| `web/lib/api.ts`, `web/lib/ai-client.ts`, `web/components/ui/`, `web/package.json`, `ai/requirements.txt`, `docs/`, `AGENTS.md` | 정민 |
+| `web/lib/api.ts`, `web/lib/ai-client.ts`, `web/lib/types.ts`, `web/components/ui/`, `web/package.json`, `ai/requirements.txt`, `docs/`, `AGENTS.md` | 정민 |
 | `deploy/`, `Dockerfile`, `.github/`, `.codex/`, `.agents/`, `.claude/`, `CLAUDE.md`, `web/AGENTS.md`, `web/CLAUDE.md` | 정민 |
 
 남의 경로를 바꿔야 하면 작업을 멈추고, 무엇이 필요한지 사용자에게 알린다.
