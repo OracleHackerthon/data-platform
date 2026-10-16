@@ -107,7 +107,7 @@ A 는 "무엇을, 누구를 위해" (기획), B 는 "어떻게, 누가" (구현)
 | `/deals` | 둘 다 | 5, 6 | B-4 | `GET /api/deals` (공장 `taskId`, 스타트업 `vendorId`) |
 | `/deals/[id]` | 둘 다 | 6, 7 | B-4 | `GET /api/deals/[id]`, accept, contract |
 | `/access-log` | 공장 | 8 | B-5 | `GET /api/access-log` |
-- `/` 는 지금 ai-example 샘플이다 (D7). 샘플을 지우는 PR 에서 정민이 `/` → `/dashboard` 이동으로 바꾼다.
+- `/` 는 `/dashboard` 로 이동한다 (10/16 샘플 제거 때 정민이 바꿈, `web/app/page.tsx`).
 - 데모 초기화(B-6)는 `curl -X POST <주소>/api/demo/reset` 로 한다. `/admin` 화면은 있으면 좋음.
 - 과제 ID 는 경로에서 받는다. 공장 대시보드만 시드 과제 `1` 을 쓴다 (과제가 하나뿐인 범위, A 의 버림 항목).
 
