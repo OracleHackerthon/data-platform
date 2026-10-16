@@ -1,6 +1,6 @@
-// MOCK: demo/reset - 실제 구현 전 임시 응답
-import { mockApi } from "@/app/api/_lib/mock-api";
+// 확정 계약에 따른 DB 기반 API
+import { realApi } from "@/app/api/_lib/real-api";
 
 export async function POST(req: Request) {
-  return mockApi(req, "reset");
+  return realApi(req, "reset");
 }

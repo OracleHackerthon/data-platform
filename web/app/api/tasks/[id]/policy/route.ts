@@ -1,6 +1,6 @@
-// MOCK: tasks/[id]/policy - 실제 구현 전 임시 응답
-import { mockApi, type IdContext } from "@/app/api/_lib/mock-api";
+// 확정 계약에 따른 DB 기반 API
+import { realApi, type IdContext } from "@/app/api/_lib/real-api";
 
 export async function PUT(req: Request, context: IdContext) {
-  return mockApi(req, "policy", context);
+  return realApi(req, "policy", context);
 }
