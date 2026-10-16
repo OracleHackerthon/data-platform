@@ -1,6 +1,4 @@
-import { ShieldCheck } from "lucide-react";
-import { Suspense } from "react";
-import { DataUpload } from "@/components/dashboard/data-upload";
+import { Database, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -12,29 +10,25 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 const metrics = ["결측률", "데이터 행 수", "수집 기간", "불량 비율", "이상값 비율"];
 const areas = ["콘텐츠 적합성", "품질·공급 신뢰성", "기술적 사용성", "경제성"];
 
-type DashboardProps = { searchParams: Promise<{ company?: string | string[] }> };
-
-async function CompanyTitle({ searchParams }: DashboardProps) {
-  const { company } = await searchParams;
-  const name = typeof company === "string" ? company.trim().slice(0, 100) : "";
-  return <h1 id="dashboard-title" className="break-words text-2xl font-semibold">{name ? `${name}의 데이터 진단` : "내 데이터 진단"}</h1>;
-}
-
-export default function DashboardPage({ searchParams }: DashboardProps) {
+export default function DashboardPage() {
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-8">
       <section className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between" aria-labelledby="dashboard-title">
         <div className="flex min-w-0 flex-col gap-2">
-          <Suspense fallback={<h1 id="dashboard-title" className="text-2xl font-semibold">내 데이터 진단</h1>}>
-            <CompanyTitle searchParams={searchParams} />
-          </Suspense>
+          <h1 id="dashboard-title" className="text-2xl font-semibold">내 데이터 진단</h1>
           <p className="text-sm text-muted-foreground">데이터의 가치를 확인하고, AI 업체에게 공개할 범위를 정하세요.</p>
           <p className="text-sm text-muted-foreground">상대 업체는 과제를 공개한 뒤 익명 과제와 합성 데이터만 볼 수 있습니다.</p>
         </div>
         <Badge variant="outline">진단 전</Badge>
       </section>
 
-      <DataUpload />
+      {/* 데이터 업로드는 범위 밖이다 (PLAN MVP "버림"). 데이터셋은 공장 DB 에 미리 연결돼 있다. */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2"><Database className="size-5 text-muted-foreground" aria-hidden="true" />연결된 데이터셋</CardTitle>
+          <CardDescription>공장 내부 DB 에 이미 연결되어 있습니다. 파일을 올리거나 내보낼 필요가 없습니다.</CardDescription>
+        </CardHeader>
+      </Card>
 
       <Alert>
         <ShieldCheck aria-hidden="true" />
