@@ -88,7 +88,7 @@ Codex 가 대화를 시작할 때 사용자가 누구인지 확인하고, 이 �
 ## 승연 (AI·EDA)
 - 수정할 수 있는 곳: `ai/` 전체 (`main.py`, `llm.py`, `config.py`, `prompts/`), `research/`
 - 참고할 코드: `ai/main.py` 끝의 주석 (엔드포인트 형태), `ai/llm.py` 의 `ask`·`load_prompt`, `docs/API_CONTRACT.md` 의 `/diagnose`
-- 로컬 실행: ai. 개인 OpenAI API 키를 `ai/.env` 에만 넣는다 (사용 한도 설정 필수). 주최 측 키는 쓰지 않는다. 확인은 `http://localhost:8000/docs` 에서 직접 실행.
+- 로컬 실행: ai. OpenAI 키는 없다 (D15: 주최 측 키는 VM 에만, 개인 키도 쓰지 않음). 로컬에서는 `value_index.py` 와 단위 테스트(`python -m unittest discover -s ai/tests`)만 확인하고, LLM 결과는 VM 배포본에서 확인한다.
 - 분석: `research/` 의 노트북에서 직접 한다. 서비스에 들어갈 로직만 `ai/` 로 옮긴다. 원본 데이터는 `research/data/raw/` (git 에 올라가지 않음).
 - 주의
   - OpenAI 호출은 `ai/llm.py` 의 `ask` 만 쓴다. 프롬프트는 `ai/prompts/*.md` 파일로 둔다.
