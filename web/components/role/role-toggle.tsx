@@ -29,7 +29,7 @@ function RoleControls() {
   }
   return <div className="flex w-full flex-col gap-8">
     <div className="flex flex-col items-center gap-4 text-center">
-      <Link href="/" className="border-b-2 border-foreground pb-2 text-2xl font-semibold">SynLink</Link>
+      <Link href="/" className="border-y-2 border-foreground py-2 text-2xl font-semibold">SynLink</Link>
       <p className="text-sm text-muted-foreground">원본은 공장 안에, 검증은 데이터 위에서.</p>
     </div>
     {path !== "/" && <div className="flex flex-wrap items-center justify-between gap-4">
