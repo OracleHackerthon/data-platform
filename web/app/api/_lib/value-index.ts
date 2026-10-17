@@ -33,7 +33,9 @@ export function normalizeExcludedWeights(value: unknown): unknown {
 export function storedValueIndex(value: unknown): ValueIndex {
   const parsed = normalizeExcludedWeights(parseDbJson(value));
   if (!isValueIndex(parsed)) throw new ApiError(500, "저장된 가치평가지수 형식이 올바르지 않습니다");
-  return parsed;
+  // 내부 재사용 판별값은 API 응답에 노출하지 않는다.
+  return { score: parsed.score, min: parsed.min, max: parsed.max, areas: parsed.areas,
+    elements: parsed.elements, suggestions: parsed.suggestions };
 }
 
 export function summaryValueIndex(value: ValueIndex) {

@@ -75,7 +75,7 @@ export default function DashboardPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-2">
             <h2 id="diagnosis-title" className="text-lg font-semibold">데이터 가치와 품질</h2>
-            <p id="diagnosis-help" className="text-sm text-muted-foreground">진단하면 가치평가지수와 개선 제안을 확인할 수 있습니다.</p>
+            <p id="diagnosis-help" className="text-sm text-muted-foreground">진단하면 가치평가지수와 개선 제안을 확인할 수 있습니다. 데이터와 진단 정보가 같으면 저장된 결과를 불러옵니다.</p>
           </div>
           <Button disabled={busy} aria-describedby="diagnosis-help" onClick={run}>{busy && <Spinner data-icon="inline-start" />}{busy ? "진단 중…" : data.valueIndex ? "다시 진단" : "진단하기"}</Button>
         </div>
