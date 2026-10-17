@@ -32,7 +32,7 @@ function RoleControls() {
       <Link href="/" className="border-b-2 border-foreground pb-2 text-2xl font-semibold">제조 데이터 검증·거래</Link>
       <p className="text-sm text-muted-foreground">원본은 공장 안에, 검증은 데이터 위에서.</p>
     </div>
-    <div className="flex flex-wrap items-center justify-between gap-4">
+    {path !== "/" && <div className="flex flex-wrap items-center justify-between gap-4">
       <nav aria-label="주 메뉴" className="flex flex-wrap items-center gap-2">
         {links.map(([href, label]) => <Link key={href} href={href} aria-current={path === href ? "page" : undefined} className={cn("rounded-lg px-4 py-2 text-sm transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring", path === href ? "bg-secondary text-secondary-foreground" : "text-muted-foreground")}>{label}</Link>)}
       </nav>
@@ -47,6 +47,6 @@ function RoleControls() {
           <SelectContent><SelectGroup>{Object.entries(vendors).map(([id, label]) => <SelectItem key={id} value={Number(id)}>{label}</SelectItem>)}</SelectGroup></SelectContent>
         </Select>}
       </div>
-    </div>
+    </div>}
   </div>;
 }
