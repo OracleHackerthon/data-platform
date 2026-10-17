@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import styles from "./interactions.module.css";
 
 // API_CONTRACT.md 공통 규칙: 업체 A~D의 시드 ID는 1~4. 실명은 수락 전에 표시하지 않는다.
-const vendors = { 1: "업체 A", 2: "업체 B", 3: "업체 C", 4: "업체 D (반도체 제조)" };
+const vendors = { 1: "업체 A", 2: "업체 B", 3: "업체 C" };
 
 export function RoleToggle() {
   return <Suspense fallback={<p className="text-sm text-muted-foreground">역할 메뉴를 불러오고 있습니다…</p>}><RoleControls /></Suspense>;

@@ -20,7 +20,6 @@ export default function RegisterTaskPage() {
   const { role, ready } = useRole();
   const router = useRouter();
   const { data, loading, error, reload, update } = useApi<TaskDetailFactory>(ready && role === "factory" ? "/api/tasks/1?role=factory" : null);
-  const [industry, setIndustry] = useState<string | undefined>();
   const [busy, setBusy] = useState(false);
   const saving = useRef(false);
   const [actionError, setActionError] = useState(false);
@@ -32,8 +31,8 @@ export default function RegisterTaskPage() {
     setBusy(true);
     setActionError(false);
     try {
-      const selected = industry ?? data.blockIndustry ?? "none";
-      const result = await requestApi<PolicyResult>("/api/tasks/1/policy", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role: "factory", synthLevel: "medium", blockIndustry: selected === "none" ? null : selected }) });
+      // 10/17 데모에서 경쟁 업종 차단을 뺐다. API 는 그대로 두고 항상 차단하지 않음으로 보낸다.
+      const result = await requestApi<PolicyResult>("/api/tasks/1/policy", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role: "factory", synthLevel: "medium", blockIndustry: null }) });
       update({ ...data, status: result.status, synthLevel: result.synthLevel, blockIndustry: result.blockIndustry });
       toast.success("과제가 등록되어 공개되었습니다");
     } catch { setActionError(true); }
@@ -67,7 +66,7 @@ export default function RegisterTaskPage() {
         <Card>
           <CardHeader>
             <CardTitle><h2 className="text-[13pt] font-bold">과제 등록서</h2></CardTitle>
-            <CardDescription>추천 과제를 등록할 때 적용할 합성 데이터 수준과 차단 업종을 작성하세요.</CardDescription>
+            <CardDescription>추천 과제를 등록할 때 적용할 합성 데이터 수준을 확인하세요.</CardDescription>
           </CardHeader>
           <CardContent>
             <form className="flex flex-col gap-4" onSubmit={(event) => { event.preventDefault(); void save(); }}>
@@ -84,18 +83,8 @@ export default function RegisterTaskPage() {
               </Select>
               <FieldDescription>현재 중간 수준의 합성 데이터를 제공합니다.</FieldDescription>
             </Field>
-            <Field>
-              <FieldLabel htmlFor="block-industry">경쟁 업종 차단</FieldLabel>
-              <Select value={industry ?? data.blockIndustry ?? "none"} disabled={busy} onValueChange={(value) => { if (value !== null) setIndustry(value); }} items={{ "반도체 제조": "반도체 제조", none: "차단하지 않음" }}>
-                <SelectTrigger id="block-industry" className="w-full"><SelectValue /></SelectTrigger>
-                <SelectContent><SelectGroup>
-                  <SelectItem value="반도체 제조">반도체 제조</SelectItem>
-                  <SelectItem value="none">차단하지 않음</SelectItem>
-                </SelectGroup></SelectContent>
-              </Select>
-            </Field>
             </FieldGroup>
-            <p id="publish-help" className="text-sm text-muted-foreground">등록하면 차단 업종을 제외한 업체가 추천 과제와 합성 데이터를 볼 수 있습니다.</p>
+            <p id="publish-help" className="text-sm text-muted-foreground">등록하면 스타트업이 추천 과제와 합성 데이터를 볼 수 있습니다.</p>
             <Button type="submit" disabled={!data.title || busy} aria-describedby="publish-help">{busy && <Spinner data-icon="inline-start" />}{busy ? "저장 중…" : data.status === "published" ? "등록 정보 저장" : "과제 등록 및 공개"}</Button>
             </form>
           </CardContent>
