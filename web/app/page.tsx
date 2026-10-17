@@ -46,6 +46,6 @@ export default function Home() {
       </Card>
     </div>
     <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="size-4 shrink-0" aria-hidden="true" />원본 데이터는 공장 밖으로 나가지 않습니다.</p>
-    <p className="text-center text-sm text-muted-foreground">입장 후 상단 메뉴에서 역할을 바꿀 수 있습니다.</p>
+    <p className="text-center text-sm text-muted-foreground">역할을 바꾸려면 상단의 SynLink 를 눌러 이 화면으로 돌아오세요.</p>
   </main>;
 }

@@ -21,7 +21,7 @@ export default function CatalogPage() {
     <div className="flex flex-col gap-2"><h1 className="text-2xl font-semibold">익명 과제 카탈로그</h1><p className="text-sm text-muted-foreground">공장 원본을 받지 않고, 공개된 과제와 합성 데이터로 적합성을 확인하세요.</p><p className="text-sm text-muted-foreground">이 화면에는 공장의 실명과 원본 데이터가 표시되지 않습니다.</p></div>
     {!ready || role !== "startup" || loading ? <div aria-busy="true" className="grid gap-4 sm:grid-cols-2"><span role="status" className="sr-only">과제를 불러오고 있습니다</span><Skeleton className="h-64" /><Skeleton className="h-64" /></div>
       : error ? <Alert variant="destructive"><AlertTitle>과제를 불러오지 못했습니다</AlertTitle><AlertDescription>연결을 확인하고 다시 시도해 주세요.</AlertDescription><Button onClick={reload} variant="outline">다시 시도</Button></Alert>
-      : !data?.length ? <Empty><EmptyHeader><EmptyTitle>현재 볼 수 있는 과제가 없습니다</EmptyTitle><EmptyDescription>아직 공개된 과제가 없거나, 선택한 업체의 업종이 공개 정책에 의해 차단되어 있습니다. 상단에서 다른 업체를 선택할 수 있습니다.</EmptyDescription></EmptyHeader></Empty>
+      : !data?.length ? <Empty><EmptyHeader><EmptyTitle>현재 볼 수 있는 과제가 없습니다</EmptyTitle><EmptyDescription>아직 공개된 과제가 없거나, 선택한 업체의 업종이 공개 정책에 의해 차단되어 있습니다.</EmptyDescription></EmptyHeader></Empty>
       : <div className="grid min-w-0 gap-4 lg:grid-cols-2">{data.map((task) => <Card key={task.id}>
         <CardHeader><CardTitle>{task.title}</CardTitle><CardDescription className="break-words">{task.problem}</CardDescription></CardHeader>
         <CardContent className="flex min-w-0 flex-col gap-4">
