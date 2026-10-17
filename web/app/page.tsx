@@ -31,16 +31,16 @@ export default function Home() {
     </section>
     <div className="grid gap-4 sm:grid-cols-2">
       <Card className={cn("flex flex-col", styles.choice)}>
-        <CardHeader className="gap-4"><Factory className="size-8 text-primary" aria-hidden="true" /><CardTitle>제조 기업</CardTitle><CardDescription>우리 공장의 데이터로 가장 잘 맞는 AI 업체를 찾고 싶어요.</CardDescription></CardHeader>
+        <CardHeader className="gap-4"><Factory className="size-8 text-primary" aria-hidden="true" /><CardTitle>공장</CardTitle><CardDescription>우리 공장의 데이터로 가장 잘 맞는 AI 업체를 찾고 싶어요.</CardDescription></CardHeader>
         <CardContent className="flex flex-1 flex-col gap-8">
-          <ul className="flex flex-col gap-2 text-sm text-muted-foreground"><li>데이터 가치 진단과 공개 정책 설정</li><li>익명 순위표에서 업체 성능 비교</li><li>선택한 업체와 연락하고 계약</li></ul>
-          <Button size="lg" className={cn("mt-auto w-full", styles.action)} disabled={!ready || isPending} aria-busy={isPending && entering === "factory"} onClick={() => enter("factory")}>{isPending && entering === "factory" ? <><Spinner data-icon="inline-start" />대시보드로 이동 중…</> : <>제조 기업으로 시작<ArrowRight className={styles.arrow} data-icon="inline-end" /></>}</Button>
+          <ul className="flex flex-col gap-2 text-sm text-muted-foreground"><li>데이터 가치 진단과 공개 정책 설정</li><li>업체명을 가린 순위표에서 점수로 비교</li><li>선택한 업체와 연락하고 계약</li></ul>
+          <Button size="lg" className={cn("mt-auto w-full", styles.action)} disabled={!ready || isPending} aria-busy={isPending && entering === "factory"} onClick={() => enter("factory")}>{isPending && entering === "factory" ? <><Spinner data-icon="inline-start" />대시보드로 이동 중…</> : <>공장으로 시작<ArrowRight className={styles.arrow} data-icon="inline-end" /></>}</Button>
         </CardContent>
       </Card>
       <Card className={cn("flex flex-col", styles.choice)}>
         <CardHeader className="gap-4"><Sparkles className="size-8 text-primary" aria-hidden="true" /><CardTitle>스타트업</CardTitle><CardDescription>제조 데이터로 AI 성능을 검증하고 새로운 협업 기회를 찾고 싶어요.</CardDescription></CardHeader>
         <CardContent className="flex flex-1 flex-col gap-8">
-          <ul className="flex flex-col gap-2 text-sm text-muted-foreground"><li>공개된 제조 과제와 합성 데이터 확인</li><li>모델 제출과 성능 평가</li><li>연락 요청 확인과 거래 진행</li></ul>
+          <ul className="flex flex-col gap-2 text-sm text-muted-foreground"><li>공개된 과제와 합성 데이터로 모델 개발</li><li>공장 실제 데이터로 대신 채점</li><li>연락 요청 확인과 거래 진행</li></ul>
           <Button size="lg" variant="outline" className={cn("mt-auto w-full", styles.action)} disabled={!ready || isPending} aria-busy={isPending && entering === "startup"} onClick={() => enter("startup")}>{isPending && entering === "startup" ? <><Spinner data-icon="inline-start" />카탈로그로 이동 중…</> : <>스타트업으로 시작<ArrowRight className={styles.arrow} data-icon="inline-end" /></>}</Button>
         </CardContent>
       </Card>

@@ -86,7 +86,7 @@ function ModelSubmission({ taskId, vendorId, initial }: {
 
   const percent = (value: number) => `${(value * 100).toLocaleString("ko-KR", { maximumFractionDigits: 1 })}%`;
   return <Card>
-    <CardHeader><CardTitle>모델 제출</CardTitle><CardDescription>원본을 공개하지 않고 선택한 업체의 모델 성능을 평가합니다. 시연에서는 미리 준비한 예측값을 사용합니다.</CardDescription></CardHeader>
+    <CardHeader><CardTitle>모델 제출</CardTitle><CardDescription>합성 데이터로 개발한 모델을 공장 실제 데이터의 숨긴 정답으로 대신 채점합니다. 원본은 공개되지 않습니다. 시연에서는 미리 준비한 예측값을 사용합니다.</CardDescription></CardHeader>
     <CardContent className="flex flex-col gap-4">
       <Button className="w-fit" onClick={submitModel} disabled={pending} aria-busy={pending}>
         {pending && <Spinner aria-hidden="true" />}{pending ? "평가 중…" : result ? "다시 제출" : "모델 제출"}

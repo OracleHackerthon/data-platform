@@ -30,7 +30,7 @@ function LeaderboardContent() {
   return <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-8">
     <Link href="/dashboard" className="text-sm underline underline-offset-4">대시보드로 돌아가기</Link>
     <div className="flex flex-col gap-2"><h1 className="text-2xl font-semibold">익명 업체 순위표</h1>
-      <p className="text-sm text-muted-foreground">레퍼런스와 내 공정 데이터에서의 성능을 함께 비교하세요.</p>
+      <p className="text-sm text-muted-foreground">레퍼런스가 많은 업체가 내 공정 데이터에서도 1위인 것은 아닙니다. 실제 채점 점수로 고르세요.</p>
       <p className="text-sm text-muted-foreground">업체는 별칭으로 표시되며, 연락 요청을 수락하기 전까지 실명과 연락처는 공개되지 않습니다.</p>
     </div>
     {!ready || role !== "factory" || loading ? <div aria-busy="true" className="flex flex-col gap-4"><p role="status">순위표를 불러오고 있습니다…</p><Skeleton className="h-32" /><Skeleton className="h-64" /></div>

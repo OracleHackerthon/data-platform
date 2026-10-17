@@ -100,7 +100,7 @@ export default function RegisterTaskPage() {
             </form>
           </CardContent>
         </Card>
-      {data.status === "published" && <Alert><AlertTitle>과제가 등록되었습니다</AlertTitle><AlertDescription>공개 정책에 따라 스타트업 카탈로그에 표시됩니다. 상단에서 스타트업으로 전환해 확인할 수 있습니다.</AlertDescription></Alert>}
+      {data.status === "published" && <Alert><AlertTitle>과제가 등록되었습니다</AlertTitle><AlertDescription>공개 정책에 따라 스타트업 카탈로그에 표시됩니다. 스타트업 창의 카탈로그에서 확인할 수 있습니다.</AlertDescription></Alert>}
     </>}
   </main>;
 }

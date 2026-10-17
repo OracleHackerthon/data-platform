@@ -46,7 +46,7 @@ function DealContent() {
   }
 
   if (!ready || loading) return <main className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-8" aria-busy="true"><p role="status">거래를 불러오고 있습니다…</p><Skeleton className="h-32" /><Skeleton className="h-64" /></main>;
-  if (error || !data) return <main className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-8"><Link href="/deals" className="text-sm underline underline-offset-4">거래 목록으로 돌아가기</Link><Alert variant="destructive"><AlertTitle>거래를 확인할 수 없습니다</AlertTitle><AlertDescription>다른 업체의 거래이거나 없는 거래일 수 있습니다. 상단에서 역할과 업체를 확인해 주세요.</AlertDescription><Button variant="outline" onClick={reload}>다시 시도</Button></Alert></main>;
+  if (error || !data) return <main className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-8"><Link href="/deals" className="text-sm underline underline-offset-4">거래 목록으로 돌아가기</Link><Alert variant="destructive"><AlertTitle>거래를 확인할 수 없습니다</AlertTitle><AlertDescription>다른 업체의 거래이거나 없는 거래일 수 있습니다. 첫 화면에서 고른 역할과 오른쪽 위의 업체를 확인해 주세요.</AlertDescription><Button variant="outline" onClick={reload}>다시 시도</Button></Alert></main>;
 
   const current = stages.findIndex((stage) => stage.key === data.stage);
   return <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-8">
