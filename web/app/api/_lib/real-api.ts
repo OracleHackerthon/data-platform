@@ -10,11 +10,11 @@ import { positiveId, queryId, readBody, requiredText, databaseErrorCode } from "
 import { diagnose } from "./diagnose";
 import { loadTask, listTasks, taskDetail } from "./tasks";
 import { submit, leaderboard } from "./submissions";
-import { requestContact, getDeal, listDeals, acceptDeal, saveContract } from "./deals";
+import { requestContact, getDeal, listDeals, acceptDeal, saveContract, advanceStage } from "./deals";
 import { resetDemo } from "./demo-reset";
 
 type Action = "diagnose" | "policy" | "tasks" | "task" | "submit" | "leaderboard"
-  | "request_contact" | "deals" | "accept" | "contract" | "deal" | "access_log" | "reset";
+  | "request_contact" | "deals" | "accept" | "contract" | "advance" | "deal" | "access_log" | "reset";
 export type IdContext = { params: Promise<{ id: string }> };
 
 export async function realApi(req: Request, action: Action, context?: IdContext) {
@@ -24,7 +24,7 @@ export async function realApi(req: Request, action: Action, context?: IdContext)
     const body = req.method === "GET" ? undefined : await readBody(req);
     const actor = await getActor(req, body);
     const startupOnly = ["tasks", "submit", "accept"].includes(action);
-    const factoryOnly = ["diagnose", "policy", "leaderboard", "request_contact", "contract", "access_log"].includes(action);
+    const factoryOnly = ["diagnose", "policy", "leaderboard", "request_contact", "contract", "advance", "access_log"].includes(action);
     if (startupOnly) requireRole(actor, "startup");
     if (factoryOnly) requireRole(actor, "factory");
     const id = context ? queryId((await context.params).id) : undefined;
@@ -108,6 +108,11 @@ export async function realApi(req: Request, action: Action, context?: IdContext)
         const result = await saveContract(id!, actor, { price, purpose: requiredText(body!.purpose, 100),
           period: requiredText(body!.period, 100), scope: requiredText(body!.scope, 100), delivery: requiredText(body!.delivery, 100) });
         await log("save_contract", `deal:${id}`);
+        return ok(result);
+      }
+      case "advance": {
+        const result = await advanceStage(id!, actor);
+        await log("advance_stage", `deal:${id}`);
         return ok(result);
       }
       case "access_log": {

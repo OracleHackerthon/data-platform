@@ -6,7 +6,7 @@ export const statusLabels: Record<DealStatus, string> = {
   contracted: "계약 완료",
 };
 
-// 계약 저장 시 payment_pending 까지만 실제로 바뀐다. 이후 단계는 표시만 한다 (계약 B-4, 결제 없음).
+// 계약 저장 시 payment_pending, 이후는 공장이 advance 로 한 단계씩 넘긴다 (계약 B-4, 결제 없음, 10/17).
 export const stages: { key: DealStage; label: string }[] = [
   { key: "contract", label: "계약 협의" },
   { key: "payment_pending", label: "입금 대기" },

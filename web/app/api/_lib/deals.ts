@@ -74,6 +74,22 @@ export async function acceptDeal(id: number, actor: RequestActor): Promise<Deal>
   return getDeal(id, actor);
 }
 
+// 10/17 시연용: 결제 없이 입금 대기 → 격리 환경 접근 허용 → 정산 완료로 한 단계씩 넘긴다 (공장만).
+const nextStage: Partial<Record<Deal["stage"], Deal["stage"]>> = { payment_pending: "access_granted", access_granted: "settled" };
+
+export async function advanceStage(id: number, actor: RequestActor): Promise<Deal> {
+  const deal = await getDeal(id, actor);
+  const next = nextStage[deal.stage];
+  if (deal.status !== "contracted" || !next) throw new ApiError(409, "계약 뒤 입금 대기·접근 허용 단계에서만 다음 단계로 넘길 수 있습니다");
+  await query(
+    `BEGIN
+       UPDATE deals SET stage = :next WHERE id = :id AND status = 'contracted' AND stage = :current;
+       IF SQL%ROWCOUNT <> 1 THEN RAISE_APPLICATION_ERROR(-20001, 'Deal state changed'); END IF;
+     END;`, { id, next, current: deal.stage },
+  );
+  return getDeal(id, actor);
+}
+
 export async function saveContract(id: number, actor: RequestActor, terms: ContractTerms): Promise<Deal> {
   const deal = await getDeal(id, actor);
   if (deal.status !== "accepted") throw new ApiError(409, "수락된 거래에만 계약을 저장할 수 있습니다");

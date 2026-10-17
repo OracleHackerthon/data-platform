@@ -15,6 +15,7 @@ const actionLabels: Record<AccessAction, string> = {
   list_deals: "거래 목록 조회",
   accept: "연락 수락",
   save_contract: "계약 저장",
+  advance_stage: "거래 단계 진행",
   view_deal: "거래 조회",
   view_access_log: "접근 기록 조회",
   raw_download: "원본 다운로드",

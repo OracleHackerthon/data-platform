@@ -235,6 +235,7 @@ export type AccessAction =
   | "list_deals"
   | "accept"
   | "save_contract"
+  | "advance_stage"
   | "view_deal"
   | "view_access_log"
   | "raw_download";

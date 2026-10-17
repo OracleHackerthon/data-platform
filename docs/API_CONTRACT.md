@@ -173,6 +173,12 @@
 - 응답 data: "거래 한 건" (`status: "contracted"`, `stage: "payment_pending"`)
 - 오류: 400 빈 값 / 403 역할 / 409 `accepted` 가 아님
 
+### B-4. 거래 단계 진행 — `POST /api/deals/[id]/advance` (10/17 정민 추가, 시연용)
+- 요청: `{ "role": "factory" }`
+- 하는 일: `stage` 를 `payment_pending` → `access_granted` → `settled` 로 한 단계 넘긴다. 결제·실제 접근 권한은 없다. 접근 기록에 `advance_stage` 를 남긴다
+- 응답 data: "거래 한 건"
+- 오류: 403 역할 / 409 `contracted` 가 아니거나 이미 `settled`
+
 ### B-4. 거래 한 건 — `GET /api/deals/[id]?role=&vendorId=` (담당: 영진)
 ```json
 {
@@ -191,7 +197,7 @@
   - `p = (지수 − 300) / 700`, 권장 중심 `c = min + (max − min) × p`
   - `recommendedLow = c − (max − min) × 0.1`, `recommendedHigh = c + (max − min) × 0.1` (각각 `min`~`max` 안으로 자르고, 만 원 단위로 반올림)
   - 진단 전이라 지수가 없으면 `null`
-- `stage` 는 계약 저장 시 `payment_pending` 까지만 바뀐다. 이후 단계는 화면 표시만 (MOCK, 결제 없음)
+- `stage` 는 계약 저장 시 `payment_pending` 이 되고, 이후는 아래 "거래 단계 진행" 으로 공장이 한 단계씩 넘긴다 (결제 없음, 10/17)
 - 오류: 403 공장도 해당 업체도 아님 / 404
 
 ### B-5. 접근 기록 — `GET /api/access-log?role=factory` (담당: 영진)

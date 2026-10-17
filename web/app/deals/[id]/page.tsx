@@ -7,14 +7,23 @@ import { toast } from "sonner";
 import { useRole } from "@/components/role/role-provider";
 import { requestApi, useApi } from "@/components/dashboard/use-api";
 import { ContractForm } from "@/components/deals/contract-form";
-import { stages, statusLabels, won } from "@/components/deals/deal-labels";
+import { stageLabel, stages, statusLabels, won } from "@/components/deals/deal-labels";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Spinner } from "@/components/ui/spinner";
-import type { ContractTerms, Deal } from "@/lib/types";
+import type { ContractTerms, Deal, DealStage } from "@/lib/types";
+
+// 10/17 시연용 거래 단계 설명과 공장의 다음 단계 버튼 (결제 없음, POST /api/deals/[id]/advance)
+const stageNotes: Record<DealStage, string> = {
+  contract: "",
+  payment_pending: "업체의 입금을 확인하면 격리 환경 접근을 허용합니다.",
+  access_granted: "업체는 공장 데이터를 우리 격리 환경 안에서만 쓰고, 원본은 내려받을 수 없습니다.",
+  settled: "정산이 끝났습니다. 접근 기록에서 원본 다운로드가 0건인지 확인할 수 있습니다.",
+};
+const nextAction: Partial<Record<DealStage, string>> = { payment_pending: "입금 확인, 격리 환경 접근 허용", access_granted: "사용 종료, 정산 완료" };
 
 export default function DealPage() {
   return <Suspense fallback={<main className="mx-auto w-full max-w-6xl px-6 py-8"><p role="status">거래를 불러오고 있습니다…</p></main>}><DealContent /></Suspense>;
@@ -24,12 +33,12 @@ function DealContent() {
   const { id } = useParams<{ id: string }>();
   const { role, vendorId, query, ready } = useRole();
   const { data, error, loading, reload, update } = useApi<Deal>(ready ? `/api/deals/${encodeURIComponent(id)}?${query}` : null);
-  const [busy, setBusy] = useState<"accept" | "contract" | null>(null);
+  const [busy, setBusy] = useState<"accept" | "contract" | "advance" | null>(null);
   const busyRef = useRef(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const factory = role === "factory";
 
-  async function act(kind: "accept" | "contract", terms?: ContractTerms) {
+  async function act(kind: "accept" | "contract" | "advance", terms?: ContractTerms) {
     if (!data || busyRef.current) return;
     busyRef.current = true;
     setBusy(kind);
@@ -37,11 +46,12 @@ function DealContent() {
     try {
       const result = kind === "accept"
         ? await requestApi<Deal>(`/api/deals/${data.id}/accept`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role: "startup", vendorId }) })
+        : kind === "advance" ? await requestApi<Deal>(`/api/deals/${data.id}/advance`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role: "factory" }) })
         : await requestApi<Deal>(`/api/deals/${data.id}/contract`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role: "factory", ...terms }) });
       // 스타트업 응답에는 priceGuide 가 없으므로 공장 쪽 값은 유지한다
       update({ ...result, priceGuide: result.priceGuide ?? data.priceGuide });
-      toast.success(kind === "accept" ? "연락 요청을 수락했습니다. 양쪽 실명이 공개되었습니다" : "계약을 저장했습니다. 입금 대기 단계로 넘어갑니다");
-    } catch { setActionError(kind === "accept" ? "수락하지 못했습니다" : "계약을 저장하지 못했습니다"); }
+      toast.success(kind === "accept" ? "연락 요청을 수락했습니다. 양쪽 실명이 공개되었습니다" : kind === "advance" ? `${stageLabel(result.stage)} 단계로 넘어갔습니다` : "계약을 저장했습니다. 입금 대기 단계로 넘어갑니다");
+    } catch { setActionError(kind === "accept" ? "수락하지 못했습니다" : kind === "advance" ? "다음 단계로 넘기지 못했습니다" : "계약을 저장하지 못했습니다"); }
     finally { busyRef.current = false; setBusy(null); }
   }
 
@@ -59,7 +69,10 @@ function DealContent() {
     <ol aria-label="거래 단계" className="grid gap-2 sm:grid-cols-4">{stages.map((stage, index) => <li key={stage.key} aria-current={index === current ? "step" : undefined} className={index <= current ? "rounded-lg bg-secondary p-4 text-secondary-foreground" : "rounded-lg border p-4 text-muted-foreground"}>
       <span className="text-sm tabular-nums">{index + 1}단계</span><p className="font-medium">{stage.label}</p>
     </li>)}</ol>
-    {data.stage === "payment_pending" && <p className="text-sm text-muted-foreground">이후 단계(입금 확인, 격리 환경 접근, 정산)는 이 시연에서 표시만 합니다.</p>}
+    {data.status === "contracted" && <div className="flex flex-wrap items-center justify-between gap-4">
+      <p className="text-sm text-muted-foreground">{stageNotes[data.stage]} 시연에서는 실제 결제가 오가지 않습니다.</p>
+      {factory && nextAction[data.stage] && <Button disabled={busy !== null} onClick={() => act("advance")}>{busy === "advance" && <Spinner data-icon="inline-start" />}{busy === "advance" ? "처리 중…" : nextAction[data.stage]}</Button>}
+    </div>}
 
     {actionError && <Alert variant="destructive"><AlertTitle>{actionError}</AlertTitle><AlertDescription>잠시 후 다시 시도해 주세요.</AlertDescription><Button variant="outline" onClick={reload}>거래 다시 불러오기</Button></Alert>}
 
