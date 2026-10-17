@@ -18,7 +18,7 @@ export default function Home() {
 
   return <main className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-6 py-8 sm:py-16">
     <section className="flex flex-col gap-4 text-center">
-      <h1 className="text-2xl font-semibold sm:text-3xl">어떤 역할로 시작하시겠어요?</h1>
+      <h1 className="text-2xl font-semibold sm:text-3xl">SynLink, 어떤 역할로 시작하시겠어요?</h1>
       <p className="text-muted-foreground">제조 데이터를 가진 기업과 AI 기술을 가진 스타트업을 연결합니다.<br className="hidden sm:block" />역할을 선택하고 데이터 검증부터 거래까지 시작하세요.</p>
     </section>
     <div className="grid gap-4 sm:grid-cols-2">
