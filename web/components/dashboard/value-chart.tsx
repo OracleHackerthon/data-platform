@@ -10,7 +10,7 @@ export function ValueChart({ value }: { value: ValueIndexSummary }) {
       <RadarChart data={value.areas} outerRadius="60%" accessibilityLayer>
         <PolarGrid />
         <PolarAngleAxis dataKey="label" tick={{ fontSize: 11 }} />
-        <PolarRadiusAxis domain={[0, 10]} tickCount={3} />
+        <PolarRadiusAxis angle={90} orientation="left" domain={[0, 10]} tickCount={3} tick={{ fontSize: 11, dx: -4 }} />
         <ChartTooltip content={<ChartTooltipContent />} />
         <Radar name="영역 점수" dataKey="score" stroke="var(--color-score)" fill="var(--color-score)" fillOpacity={0.2} />
       </RadarChart>

@@ -75,7 +75,7 @@
 - shadcn 공식 스킬 전체는 넣지 않았다. 팀원 Codex 가 `npx shadcn add` 로 공통 파일(`components/ui`, `package.json`)을 바꾸고 Geist 폰트를 되돌릴 수 있어서다.
 - Vercel `react-best-practices`(성능 최적화 규칙)와 obra/superpowers 묶음(TDD·worktree 강제)은 해커톤 흐름과 맞지 않아 넣지 않았다.
 - 디자인 스킬은 스킬 폴더가 아닌 **보관함 `docs/design-library/`** 에 둔다 (10/15). Codex 가 설명만 보고 스스로 불러오지 않게 하고, `ui-design` 7절 연결표가 정한 때에만 읽는다. 채택: jakubkrehel/skills (4c66b1f) 의 `break`, `state-machine`, `better-*` 7개, `interface-review` / MengTo/Skills (83a47fe) 의 `no-ai-design-slop`, `audit-ai-design-slop`. 모두 MIT, 실행 스크립트 없음, `agents/openai.yaml` 만 지움.
-- 넣지 않은 것: emilkowalski/skills (대부분 애니메이션, `break-ui` 는 API 쪽 데이터를 바꿔 D4·담당 경로와 충돌), elayadesign 두 스킬 (폰트 교체·외부 이미지·유리 효과 내비를 강제해 D2 와 충돌), ConardLi/garden-skills (중국어, 단독 HTML·영상용), MengTo 나머지 (게임·일러스트 등 무관).
+- 당시 넣지 않은 것: emilkowalski/skills (애니메이션 비중이 높아 제외했으나, 10/17 D18에서 세부 기준만 제한 도입), elayadesign 두 스킬 (폰트 교체·외부 이미지·유리 효과 내비를 강제해 D2 와 충돌), ConardLi/garden-skills (중국어, 단독 HTML·영상용), MengTo 나머지 (게임·일러스트 등 무관).
 
 ## D12. 삭제는 금지하지 않고 매번 묻는다. 강제는 rules, 최종 판단은 사람
 - 10/15 리허설: Windows Codex(0.162.1)에 "이 폴더 삭제해줘" → `Remove-Item -Recurse -Force` 를 승인("항상 허용")해 저장소 폴더 내용이 전부 지워졌다. AGENTS.md 의 "삭제 금지" 지침은 사용자 요청에 밀렸고, rules 는 bash 의 `rm -r` 만 막고 있었다.
@@ -121,3 +121,9 @@
 - 그대로 지키는 것: 연결 규칙, 비밀값·main 직접 커밋 금지, 화면 안 가짜 데이터 금지(D4), 삭제·충돌·강제 push 규칙.
 - 예외: 삭제는 정민에게 묻는다 (10/17 추가). 파일·폴더 삭제, 기존 API 경로·응답 필드·함수·컴포넌트·화면 제거, 패키지 제거, DB 테이블·컬럼 삭제(`DROP`, `ALTER ... DROP`, 데이터 `DELETE`) 는 실행 전에 경고하고 정민 승인을 받는다. 이유: 추가는 되돌리기 쉽지만 삭제는 다른 사람 화면·API 를 조용히 깨뜨리고, 시연 직전에 복구할 시간이 없다.
 - 비용: 영진·승연과 같은 파일을 동시에 고치면 충돌이 난다. 고치기 전에 담당자에게 알린다. 패키지를 추가하면 이미지 빌드가 느려질 수 있으니 PR 에 적는다.
+
+## D18. Emil 디자인 기준은 기존 ui-design에 제한 도입 (10/17, 예원 요청)
+- `emil-design-eng` 하나만 `docs/design-library/`에 원본 그대로 보관한다. 출처 커밋과 MIT 라이선스를 함께 고정한다. 개인 전역 스킬로 설치하지 않는다.
+- `ui-design` 8절에 짧은 적용 기준을 둔다. 버튼 피드백·짧은 전환을 다듬을 때 참고하며, 단순 문구·색 수정으로 애니메이션 작업을 늘리지 않는다.
+- 숫자·금액·순위표에는 장식적인 움직임을 더하지 않는다. `prototype`, `break-ui`, 새 패키지 도입은 이번 범위에 포함하지 않는다.
+- 화면 동작이나 배포 설정은 이 도입으로 바꾸지 않는다.

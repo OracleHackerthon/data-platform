@@ -18,9 +18,10 @@ export function ContractForm({ guide, busy, onSubmit }: { guide: PriceGuide | nu
   const [price, setPrice] = useState(initial ? String(initial) : "");
   const [choices, setChoices] = useState<Record<Choice, string>>({ purpose: "PoC 검증", period: "3개월", scope: "원본 일부(격리 환경)", delivery: "격리 환경 접속" });
   const amount = Number(price.replace(/[^0-9]/g, ""));
+  const valid = price.trim() !== "" && Number.isSafeInteger(amount) && amount > 0;
   const outside = guide && amount > 0 && (amount < guide.recommendedLow || amount > guide.recommendedHigh);
 
-  return <form className="flex flex-col gap-4" onSubmit={(event) => { event.preventDefault(); if (amount > 0) onSubmit({ price: amount, ...choices }); }}>
+  return <form className="flex flex-col gap-4" onSubmit={(event) => { event.preventDefault(); if (valid && !busy) onSubmit({ price: amount, ...choices }); }}>
     {guide && <div className="flex flex-col gap-2 rounded-lg bg-muted p-4">
       <p className="text-sm text-muted-foreground">권장 가격 범위 (가치평가지수 {guide.valueIndex.toLocaleString("ko-KR")}점 기준)</p>
       <p className="text-xl font-semibold tabular-nums">{won(guide.recommendedLow)} ~ {won(guide.recommendedHigh)}</p>
@@ -29,7 +30,7 @@ export function ContractForm({ guide, busy, onSubmit }: { guide: PriceGuide | nu
     <FieldGroup>
       <Field>
         <FieldLabel htmlFor="contract-price">계약 금액 (원)</FieldLabel>
-        <Input id="contract-price" inputMode="numeric" value={amount ? amount.toLocaleString("ko-KR") : price} disabled={busy} onChange={(event) => setPrice(event.target.value.replace(/[^0-9]/g, ""))} aria-invalid={amount <= 0 || undefined} />
+        <Input id="contract-price" inputMode="numeric" value={amount ? amount.toLocaleString("ko-KR") : price} disabled={busy} onChange={(event) => setPrice(event.target.value.replace(/[^0-9]/g, ""))} aria-invalid={!valid || undefined} />
         <FieldDescription>{outside ? "권장 범위 밖입니다. 그대로 저장할 수 있습니다." : "권장 범위 중간값으로 채워 두었습니다."}</FieldDescription>
       </Field>
       {(Object.keys(contractOptions) as Choice[]).map((key) => <Field key={key}>
@@ -41,6 +42,6 @@ export function ContractForm({ guide, busy, onSubmit }: { guide: PriceGuide | nu
       </Field>)}
     </FieldGroup>
     {outside && <Alert><AlertTitle>권장 범위 밖의 금액입니다</AlertTitle><AlertDescription>권장 범위는 {won(guide.recommendedLow)} ~ {won(guide.recommendedHigh)} 입니다. 최종 가격은 공장이 정하므로 그대로 저장할 수 있습니다.</AlertDescription></Alert>}
-    <Button type="submit" disabled={busy || amount <= 0}>{busy && <Spinner data-icon="inline-start" />}{busy ? "저장 중…" : "계약 저장"}</Button>
+    <Button type="submit" disabled={busy || !valid}>{busy && <Spinner data-icon="inline-start" />}{busy ? "저장 중…" : "계약 저장"}</Button>
   </form>;
 }

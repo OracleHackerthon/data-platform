@@ -19,6 +19,7 @@
 | `better-colors` | 색 체계, 의미 토큰, 대비(읽기 쉬운 글자색) 점검 | 자동: 색을 정하거나 고칠 때 SKILL.md 만 참고 |
 | `better-typography` | 글자 크기 단계, 줄 간격, 줄바꿈, 숫자 정렬 | 자동: 글자 모양을 고칠 때 SKILL.md 만 참고 (폰트 교체 조언은 무시) |
 | `better-layout` | 묶음, 정렬, 읽는 순서, 좁은 화면 대응 | 자동: 배치를 고칠 때 SKILL.md 만 참고 |
+| `emil-design-eng` | 버튼 피드백과 짧은 전환의 세부 기준 | 버튼 반응·전환을 만들거나 다듬을 때 `ui-design` 8절을 먼저 적용. 원문은 구체적인 움직임 검토가 필요할 때만 참고 |
 | `break` | 컴포넌트 하나를 긴 값·빈 값·큰 숫자 같은 최악의 데이터로 임시 페이지에 펼쳐 깨지는 곳을 찾음 | 제안만: 핵심 흐름이 동작한 뒤 |
 | `state-machine` | 컴포넌트 하나의 로딩·빈·오류·한 개·많음 상태를 임시 페이지에서 전환하며 보게 함 | 제안만: 상태 화면을 다듬을 때 |
 | `better-interface` | 아래 `better-*` 를 묶어 한 화면을 종합 점검 | 제안만: 2일차 09:00~11:00 다듬기 |
@@ -38,5 +39,6 @@
 |---|---|---|
 | `break`, `state-machine`, `better-*`, `interface-review` | jakubkrehel/skills `skills/` (4c66b1f) | MIT, `LICENSES/jakubkrehel-skills.txt` |
 | `no-ai-design-slop`, `audit-ai-design-slop` | MengTo/Skills `agent-skills/ui/` (83a47fe) | MIT, `LICENSES/MengTo-Skills.txt` |
+| `emil-design-eng` | emilkowalski/skills `skills/emil-design-eng/` (2d228630ba1446365f614a108cb8252f1feda202) | MIT, `LICENSES/emilkowalski-skills.txt` |
 
 원본에서 `agents/openai.yaml`(Codex 자동 호출 설정)만 지웠고 나머지는 그대로다. 실행 스크립트는 없다.

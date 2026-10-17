@@ -6,8 +6,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRole } from "./role-provider";
+import { SynLinkMark } from "./synlink-mark";
 import { cn } from "@/lib/utils";
 import type { Role } from "@/lib/types";
+import styles from "./interactions.module.css";
 
 // API_CONTRACT.md 공통 규칙: 업체 A~D의 시드 ID는 1~4. 실명은 수락 전에 표시하지 않는다.
 const vendors = { 1: "업체 A", 2: "업체 B", 3: "업체 C", 4: "업체 D (반도체 제조)" };
@@ -29,24 +31,24 @@ function RoleControls() {
   }
   return <div className="flex w-full flex-col gap-8">
     <div className="flex flex-col items-center gap-4 text-center">
-      <Link href="/" className="border-b-2 border-foreground pb-2 text-2xl font-semibold">제조 데이터 검증·거래</Link>
-      <p className="text-sm text-muted-foreground">원본은 공장 안에, 검증은 데이터 위에서.</p>
+      <Link href="/" aria-label="SynLink 홈" title="합성 데이터로 검증의 병목을 풀고 기업을 연결합니다" className="flex items-center gap-2 border-y-2 border-primary py-2 text-2xl font-semibold text-primary"><SynLinkMark />SynLink</Link>
+      <p className="text-sm text-muted-foreground">원본은 공장에게, 검증은 데이터 위에서.</p>
     </div>
-    <div className="flex flex-wrap items-center justify-between gap-4">
+    {path !== "/" && <div className="flex flex-wrap items-center justify-between gap-4">
       <nav aria-label="주 메뉴" className="flex flex-wrap items-center gap-2">
-        {links.map(([href, label]) => <Link key={href} href={href} aria-current={path === href ? "page" : undefined} className={cn("rounded-lg px-4 py-2 text-sm transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring", path === href ? "bg-secondary text-secondary-foreground" : "text-muted-foreground")}>{label}</Link>)}
+        {links.map(([href, label]) => <Link key={href} href={href} aria-current={path === href ? "page" : undefined} className={cn("rounded-lg px-4 py-2 text-sm hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring", styles.menu, path === href ? "bg-secondary text-primary" : "text-muted-foreground")}>{label}</Link>)}
       </nav>
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-sm text-muted-foreground">현재 역할</span>
         <div role="group" aria-label="역할 전환" className="flex gap-2">
-          <Button disabled={!ready} aria-pressed={role === "factory"} variant={role === "factory" ? "default" : "outline"} onClick={() => changeRole("factory")}>공장</Button>
-          <Button disabled={!ready} aria-pressed={role === "startup"} variant={role === "startup" ? "default" : "outline"} onClick={() => changeRole("startup")}>스타트업</Button>
+          <Button className={styles.action} disabled={!ready} aria-pressed={role === "factory"} variant={role === "factory" ? "default" : "outline"} onClick={() => changeRole("factory")}>공장</Button>
+          <Button className={styles.action} disabled={!ready} aria-pressed={role === "startup"} variant={role === "startup" ? "default" : "outline"} onClick={() => changeRole("startup")}>스타트업</Button>
         </div>
         {role === "startup" && <Select value={vendorId} items={vendors} onValueChange={(value) => { if (value !== null) setVendorId(value); }}>
           <SelectTrigger aria-label="업체 선택"><SelectValue /></SelectTrigger>
           <SelectContent><SelectGroup>{Object.entries(vendors).map(([id, label]) => <SelectItem key={id} value={Number(id)}>{label}</SelectItem>)}</SelectGroup></SelectContent>
         </Select>}
       </div>
-    </div>
+    </div>}
   </div>;
 }

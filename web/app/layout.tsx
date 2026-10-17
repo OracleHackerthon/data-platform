@@ -8,7 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 
 // 빌드 시 외부 폰트 다운로드를 피하려고 시스템 폰트를 쓴다
 export const metadata: Metadata = {
-  title: "제조 데이터 검증·거래",
+  title: "SynLink",
   description: "공장 원본 데이터를 내보내지 않고 AI 업체의 성능을 비교하는 플랫폼",
 };
 
