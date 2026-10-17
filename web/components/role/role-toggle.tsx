@@ -30,12 +30,12 @@ function RoleControls() {
   }
   return <div className="flex w-full flex-col gap-8">
     <div className="flex flex-col items-center gap-4 text-center">
-      <Link href="/" aria-label="SynLink 홈" title="합성 데이터로 검증의 병목을 풀고 기업을 연결합니다" className="flex items-center gap-2 border-y-2 border-foreground py-2 text-2xl font-semibold"><SynLinkMark />SynLink</Link>
+      <Link href="/" aria-label="SynLink 홈" title="합성 데이터로 검증의 병목을 풀고 기업을 연결합니다" className="flex items-center gap-2 border-y-2 border-primary py-2 text-2xl font-semibold text-primary"><SynLinkMark />SynLink</Link>
       <p className="text-sm text-muted-foreground">원본은 공장에게, 검증은 데이터 위에서.</p>
     </div>
     {path !== "/" && <div className="flex flex-wrap items-center justify-between gap-4">
       <nav aria-label="주 메뉴" className="flex flex-wrap items-center gap-2">
-        {links.map(([href, label]) => <Link key={href} href={href} aria-current={path === href ? "page" : undefined} className={cn("rounded-lg px-4 py-2 text-sm transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring", path === href ? "bg-secondary text-secondary-foreground" : "text-muted-foreground")}>{label}</Link>)}
+        {links.map(([href, label]) => <Link key={href} href={href} aria-current={path === href ? "page" : undefined} className={cn("rounded-lg px-4 py-2 text-sm transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring", path === href ? "bg-secondary text-primary" : "text-muted-foreground")}>{label}</Link>)}
       </nav>
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-sm text-muted-foreground">현재 역할</span>
