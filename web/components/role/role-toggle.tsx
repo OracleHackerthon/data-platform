@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRole } from "./role-provider";
+import { SynLinkMark } from "./synlink-mark";
 import { cn } from "@/lib/utils";
 import type { Role } from "@/lib/types";
 
@@ -29,7 +30,7 @@ function RoleControls() {
   }
   return <div className="flex w-full flex-col gap-8">
     <div className="flex flex-col items-center gap-4 text-center">
-      <Link href="/" className="border-y-2 border-foreground py-2 text-2xl font-semibold">SynLink</Link>
+      <Link href="/" aria-label="SynLink 홈" title="합성 데이터로 검증의 병목을 풀고 기업을 연결합니다" className="flex items-center gap-2 border-y-2 border-foreground py-2 text-2xl font-semibold"><SynLinkMark />SynLink</Link>
       <p className="text-sm text-muted-foreground">원본은 공장에게, 검증은 데이터 위에서.</p>
     </div>
     {path !== "/" && <div className="flex flex-wrap items-center justify-between gap-4">
