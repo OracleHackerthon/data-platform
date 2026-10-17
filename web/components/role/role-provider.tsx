@@ -3,19 +3,18 @@
 import { createContext, useContext, useMemo, useSyncExternalStore, type ReactNode } from "react";
 import type { Role } from "@/lib/types";
 
+// 데모에서 창 두 개(공장·스타트업)를 동시에 띄우도록 역할은 탭마다 sessionStorage 에 둔다.
 const storageKey = "manufacturing-demo-role";
 const defaultState = '{"role":"factory","vendorId":2}';
 let fallback = defaultState;
 function subscribe(callback: () => void) {
-  window.addEventListener("storage", callback);
   window.addEventListener("demo-role", callback);
   return () => {
-    window.removeEventListener("storage", callback);
     window.removeEventListener("demo-role", callback);
   };
 }
 function snapshot() {
-  try { return localStorage.getItem(storageKey) ?? fallback; } catch { return fallback; }
+  try { return sessionStorage.getItem(storageKey) ?? fallback; } catch { return fallback; }
 }
 function parse(value: string) {
   try {
@@ -35,7 +34,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
   const state = useMemo(() => parse(value), [value]);
   function save(next: typeof state) {
     fallback = JSON.stringify(next);
-    try { localStorage.setItem(storageKey, fallback); } catch { /* 저장이 차단되어도 현재 탭에서는 역할 전환을 유지한다. */ }
+    try { sessionStorage.setItem(storageKey, fallback); } catch { /* 저장이 차단되어도 현재 탭에서는 역할 전환을 유지한다. */ }
     window.dispatchEvent(new Event("demo-role"));
   }
   return <RoleContext.Provider value={{ ...state, ready,
